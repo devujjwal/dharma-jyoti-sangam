@@ -2,95 +2,107 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* =============================================
+   DIVYA JYOTI — Spiritual Design System
+   Sacred saffron, gold & crimson palette
+   All colors MUST be HSL
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;500;600;700;800&family=Noto+Serif+Devanagari:wght@400;600;700&family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&display=swap');
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Core sacred palette */
+    --background: 35 60% 97%;
+    --foreground: 20 40% 12%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 38 80% 96%;
+    --card-foreground: 20 40% 12%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 38 80% 98%;
+    --popover-foreground: 20 40% 12%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Saffron — primary brand */
+    --primary: 24 95% 48%;
+    --primary-foreground: 35 100% 98%;
+    --primary-glow: 35 100% 60%;
+    --primary-deep: 20 90% 35%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Gold — accent */
+    --secondary: 43 95% 50%;
+    --secondary-foreground: 20 40% 12%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Crimson/maroon — deep accent */
+    --accent: 355 75% 35%;
+    --accent-foreground: 35 100% 97%;
+    --accent-glow: 355 80% 55%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Muted cream */
+    --muted: 38 40% 90%;
+    --muted-foreground: 20 25% 40%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 38 30% 82%;
+    --input: 38 30% 82%;
+    --ring: 24 95% 48%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
+    /* Extended spiritual tokens */
+    --lotus-pink: 330 60% 72%;
+    --lotus-pink-deep: 330 65% 55%;
+    --turmeric: 42 98% 58%;
+    --vermillion: 10 90% 52%;
+    --forest-green: 150 45% 28%;
+    --sacred-white: 35 100% 98%;
+    --deep-maroon: 345 80% 22%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    /* Gradients */
+    --gradient-saffron: linear-gradient(135deg, hsl(24 95% 48%), hsl(35 100% 60%), hsl(43 95% 55%));
+    --gradient-dawn: linear-gradient(180deg, hsl(35 100% 60%) 0%, hsl(24 90% 48%) 50%, hsl(345 70% 30%) 100%);
+    --gradient-sacred: linear-gradient(135deg, hsl(20 90% 35%) 0%, hsl(24 95% 48%) 50%, hsl(43 95% 55%) 100%);
+    --gradient-hero: linear-gradient(to bottom, hsl(20 40% 12% / 0.7), hsl(345 80% 22% / 0.6));
+    --gradient-card: linear-gradient(145deg, hsl(38 80% 96%), hsl(43 60% 90%));
+    --gradient-maroon: linear-gradient(135deg, hsl(345 80% 22%), hsl(355 75% 35%));
 
-    --sidebar-primary: 240 5.9% 10%;
+    /* Shadows */
+    --shadow-sacred: 0 4px 24px -4px hsl(24 95% 48% / 0.35);
+    --shadow-gold: 0 4px 20px -2px hsl(43 95% 50% / 0.4);
+    --shadow-deep: 0 8px 40px -8px hsl(20 40% 12% / 0.25);
+    --shadow-card: 0 2px 16px hsl(24 60% 48% / 0.12);
+    --shadow-glow: 0 0 40px hsl(43 95% 55% / 0.3);
 
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar */
+    --sidebar-background: 20 40% 10%;
+    --sidebar-foreground: 35 80% 90%;
+    --sidebar-primary: 24 95% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 345 50% 20%;
+    --sidebar-accent-foreground: 35 80% 90%;
+    --sidebar-border: 345 40% 18%;
+    --sidebar-ring: 24 95% 48%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --background: 20 40% 8%;
+    --foreground: 35 80% 92%;
+    --card: 20 40% 11%;
+    --card-foreground: 35 80% 92%;
+    --popover: 20 40% 10%;
+    --popover-foreground: 35 80% 92%;
+    --primary: 24 95% 55%;
+    --primary-foreground: 20 40% 8%;
+    --secondary: 43 90% 48%;
+    --secondary-foreground: 20 40% 8%;
+    --muted: 20 30% 18%;
+    --muted-foreground: 35 30% 60%;
+    --accent: 355 70% 45%;
+    --accent-foreground: 35 80% 95%;
+    --border: 20 30% 20%;
+    --input: 20 30% 20%;
+    --ring: 24 95% 55%;
   }
 }
 
@@ -99,7 +111,126 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground;
+    font-family: 'Noto Sans Devanagari', 'Lato', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Noto Serif Devanagari', 'Cinzel', serif;
+  }
+}
+
+@layer components {
+  /* Sacred divider with Om symbol */
+  .divider-sacred {
+    @apply flex items-center gap-4 my-8;
+  }
+  .divider-sacred::before,
+  .divider-sacred::after {
+    content: '';
+    @apply flex-1 h-px;
+    background: linear-gradient(to right, transparent, hsl(var(--primary) / 0.5), transparent);
+  }
+
+  /* Mandala spinning animation for loaders */
+  .spin-slow {
+    animation: spin-slow 20s linear infinite;
+  }
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Sacred glow pulse */
+  .glow-pulse {
+    animation: glow-pulse 3s ease-in-out infinite;
+  }
+  @keyframes glow-pulse {
+    0%, 100% { box-shadow: 0 0 20px hsl(43 95% 55% / 0.3); }
+    50% { box-shadow: 0 0 40px hsl(43 95% 55% / 0.7), 0 0 80px hsl(24 95% 48% / 0.3); }
+  }
+
+  /* Floating diya animation */
+  .float-sacred {
+    animation: float-sacred 4s ease-in-out infinite;
+  }
+  @keyframes float-sacred {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+  }
+
+  /* Fade-up on scroll */
+  .fade-up {
+    animation: fade-up 0.6s ease-out both;
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Card hover with sacred lift */
+  .card-sacred {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card-sacred:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-sacred);
+  }
+
+  /* Shimmer for premium elements */
+  .shimmer {
+    background: linear-gradient(90deg, 
+      hsl(43 95% 50%) 0%, 
+      hsl(35 100% 70%) 50%, 
+      hsl(43 95% 50%) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2.5s ease-in-out infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  @keyframes shimmer {
+    from { background-position: 200% center; }
+    to { background-position: -200% center; }
+  }
+
+  /* Ticker / scroll marquee */
+  .ticker-wrap {
+    overflow: hidden;
+  }
+  .ticker-move {
+    animation: ticker 30s linear infinite;
+    white-space: nowrap;
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* Decorative corner ornament */
+  .ornament-border {
+    position: relative;
+  }
+  .ornament-border::before {
+    content: '✦';
+    position: absolute;
+    top: -8px; left: 50%;
+    transform: translateX(-50%);
+    color: hsl(var(--secondary));
+    font-size: 1.25rem;
+  }
+
+  /* Sacred pattern background */
+  .bg-pattern-sacred {
+    background-image: 
+      radial-gradient(circle at 25% 25%, hsl(var(--primary) / 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, hsl(var(--secondary) / 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 75% 25%, hsl(var(--accent) / 0.04) 0%, transparent 50%);
   }
 }
