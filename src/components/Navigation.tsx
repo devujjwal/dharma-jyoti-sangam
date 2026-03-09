@@ -1,0 +1,232 @@
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, Search, User, Bell, ChevronDown } from "lucide-react";
+import { useLanguage, LANGUAGES } from "@/contexts/LanguageContext";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+const Navigation = () => {
+  const { language, setLanguage, t } = useLanguage();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const location = useLocation();
+
+  const currentLang = LANGUAGES.find((l) => l.code === language);
+
+  const navItems = [
+    { key: "nav_panchang", href: "/panchang", icon: "📅" },
+    { key: "nav_horoscope", href: "/horoscope", icon: "⭐" },
+    { key: "nav_kundali", href: "/kundali", icon: "🔮" },
+    { key: "nav_matching", href: "/kundali-matching", icon: "💑" },
+    { key: "nav_festivals", href: "/festivals", icon: "🎊" },
+    { key: "nav_temples", href: "/temples", icon: "🛕" },
+    { key: "nav_bhajans", href: "/bhajans", icon: "🎵" },
+    { key: "nav_articles", href: "/articles", icon: "📖" },
+  ];
+
+  const isActive = (href: string) => location.pathname === href;
+
+  return (
+    <>
+      {/* Top sacred ticker bar */}
+      <div className="nav-ticker-bar">
+        <div className="ticker-wrap h-8 flex items-center overflow-hidden bg-primary/90">
+          <div className="ticker-move flex gap-16 text-primary-foreground/90 text-xs font-devanagari">
+            {[
+              "🕉️ ॐ नमः शिवाय",
+              "🌸 जय श्री राम",
+              "🪔 हरे कृष्ण हरे कृष्ण",
+              "✨ ॐ गं गणपतये नमः",
+              "🌺 जय माँ दुर्गा",
+              "🔱 ॐ नमः शिवाय",
+              "🌸 जय श्री राम",
+              "🪔 हरे कृष्ण हरे कृष्ण",
+              "✨ ॐ गं गणपतये नमः",
+              "🌺 जय माँ दुर्गा",
+            ].map((item, i) => (
+              <span key={i} className="whitespace-nowrap">{item}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Main Navigation */}
+      <nav className="sticky top-0 z-50 border-b border-border/50 bg-background/95 backdrop-blur-md shadow-card">
+        <div className="container mx-auto px-4">
+          <div className="flex h-16 items-center justify-between">
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-3 group">
+              <div className="relative w-10 h-10 rounded-full flex items-center justify-center overflow-hidden"
+                style={{ background: "var(--gradient-saffron)" }}>
+                <span className="text-xl font-bold text-primary-foreground">ॐ</span>
+              </div>
+              <div className="hidden sm:block">
+                <div className="text-lg font-devanagari-serif font-bold text-primary leading-tight">
+                  {t("appName")}
+                </div>
+                <div className="text-xs text-muted-foreground leading-tight hidden md:block">
+                  {language === "en" ? "Divya Jyoti" : "Divya Jyoti"}
+                </div>
+              </div>
+            </Link>
+
+            {/* Desktop Nav Links */}
+            <div className="hidden lg:flex items-center gap-1">
+              {navItems.slice(0, 5).map((item) => (
+                <Link
+                  key={item.key}
+                  to={item.href}
+                  className={`flex items-center gap-1 px-3 py-2 rounded-md text-sm font-devanagari transition-colors ${
+                    isActive(item.href)
+                      ? "bg-primary/10 text-primary font-semibold"
+                      : "text-foreground/80 hover:bg-muted hover:text-primary"
+                  }`}
+                >
+                  <span className="text-base">{item.icon}</span>
+                  <span>{t(item.key)}</span>
+                </Link>
+              ))}
+              {/* More dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-1 px-3 py-2 rounded-md text-sm font-devanagari text-foreground/80 hover:bg-muted hover:text-primary transition-colors">
+                    <span>और ▸</span>
+                    <ChevronDown className="w-3 h-3" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  {navItems.slice(5).map((item) => (
+                    <DropdownMenuItem key={item.key} asChild>
+                      <Link to={item.href} className="flex items-center gap-2 font-devanagari">
+                        <span>{item.icon}</span>
+                        <span>{t(item.key)}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            {/* Right Actions */}
+            <div className="flex items-center gap-2">
+              {/* Search */}
+              <button
+                onClick={() => setSearchOpen(!searchOpen)}
+                className="p-2 rounded-md text-muted-foreground hover:text-primary hover:bg-muted transition-colors"
+                aria-label="Search"
+              >
+                <Search className="w-4 h-4" />
+              </button>
+
+              {/* Language Selector */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-1 px-2 py-1.5 rounded-md border border-border text-xs font-medium hover:bg-muted transition-colors">
+                    <span>{currentLang?.nativeLabel}</span>
+                    <ChevronDown className="w-3 h-3" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-44">
+                  {LANGUAGES.map((lang) => (
+                    <DropdownMenuItem
+                      key={lang.code}
+                      onClick={() => setLanguage(lang.code)}
+                      className={`flex items-center justify-between ${language === lang.code ? "text-primary font-semibold" : ""}`}
+                    >
+                      <span>{lang.nativeLabel}</span>
+                      <span className="text-xs text-muted-foreground">{lang.label}</span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Notifications */}
+              <button className="relative p-2 rounded-md text-muted-foreground hover:text-primary hover:bg-muted transition-colors hidden sm:flex">
+                <Bell className="w-4 h-4" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full"></span>
+              </button>
+
+              {/* AI Astrologer CTA */}
+              <Link to="/ai-astrologer">
+                <Button size="sm" className="hidden sm:flex gap-1.5 text-xs font-devanagari shadow-sacred"
+                  style={{ background: "var(--gradient-saffron)" }}>
+                  <span>🔮</span>
+                  <span>{t("nav_ai")}</span>
+                </Button>
+              </Link>
+
+              {/* Login */}
+              <Link to="/login">
+                <button className="p-2 rounded-md text-muted-foreground hover:text-primary hover:bg-muted transition-colors">
+                  <User className="w-4 h-4" />
+                </button>
+              </Link>
+
+              {/* Mobile hamburger */}
+              <button
+                className="lg:hidden p-2 rounded-md text-foreground hover:bg-muted transition-colors"
+                onClick={() => setMobileOpen(!mobileOpen)}
+              >
+                {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+            </div>
+          </div>
+
+          {/* Search Bar */}
+          {searchOpen && (
+            <div className="pb-3 animate-fade-in">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <input
+                  autoFocus
+                  type="text"
+                  placeholder={t("search_placeholder")}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-border bg-muted/50 text-sm font-devanagari focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Mobile Nav */}
+        {mobileOpen && (
+          <div className="lg:hidden border-t border-border bg-background animate-fade-in">
+            <div className="container mx-auto px-4 py-3 grid grid-cols-2 gap-1">
+              {navItems.map((item) => (
+                <Link
+                  key={item.key}
+                  to={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-devanagari transition-colors ${
+                    isActive(item.href)
+                      ? "bg-primary/10 text-primary font-semibold"
+                      : "text-foreground/80 hover:bg-muted"
+                  }`}
+                >
+                  <span>{item.icon}</span>
+                  <span>{t(item.key)}</span>
+                </Link>
+              ))}
+              <Link
+                to="/ai-astrologer"
+                onClick={() => setMobileOpen(false)}
+                className="col-span-2 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-devanagari font-semibold text-primary-foreground mt-1"
+                style={{ background: "var(--gradient-saffron)" }}
+              >
+                <span>🔮</span>
+                <span>{t("nav_ai")}</span>
+              </Link>
+            </div>
+          </div>
+        )}
+      </nav>
+    </>
+  );
+};
+
+export default Navigation;
