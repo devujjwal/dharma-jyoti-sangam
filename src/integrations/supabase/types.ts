@@ -14,7 +14,132 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bookmarked_bhajans: {
+        Row: {
+          bhajan_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          bhajan_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          bhajan_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      credit_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          pack_name: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          pack_name?: string | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          pack_name?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          ai_credits: number
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          dob: string | null
+          id: string
+          language: string
+          pob: string | null
+          rashi_id: string | null
+          tob: string | null
+          updated_at: string
+        }
+        Insert: {
+          ai_credits?: number
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          dob?: string | null
+          id: string
+          language?: string
+          pob?: string | null
+          rashi_id?: string | null
+          tob?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ai_credits?: number
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          dob?: string | null
+          id?: string
+          language?: string
+          pob?: string | null
+          rashi_id?: string | null
+          tob?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      saved_kundalis: {
+        Row: {
+          created_at: string
+          dob: string
+          id: string
+          name: string
+          notes: string | null
+          pob: string
+          tob: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dob: string
+          id?: string
+          name: string
+          notes?: string | null
+          pob: string
+          tob: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dob?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          pob?: string
+          tob?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
