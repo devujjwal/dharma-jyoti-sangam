@@ -14,9 +14,11 @@ import {
 
 const Navigation = () => {
   const { language, setLanguage, t } = useLanguage();
+  const { user, profile, signOut } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const currentLang = LANGUAGES.find((l) => l.code === language);
 
