@@ -1,20 +1,24 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Search, User, Bell, ChevronDown } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, Search, User, Bell, ChevronDown, LogOut, UserCircle, Zap } from "lucide-react";
 import { useLanguage, LANGUAGES } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
 const Navigation = () => {
   const { language, setLanguage, t } = useLanguage();
+  const { user, profile, signOut } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const currentLang = LANGUAGES.find((l) => l.code === language);
 
@@ -160,12 +164,51 @@ const Navigation = () => {
                 </Button>
               </Link>
 
-              {/* Login */}
-              <Link to="/login">
-                <button className="p-2 rounded-md text-muted-foreground hover:text-primary hover:bg-muted transition-colors">
-                  <User className="w-4 h-4" />
-                </button>
-              </Link>
+              {/* Auth: User menu or Login */}
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex items-center gap-1.5 px-2 py-1.5 rounded-md border border-border hover:bg-muted transition-colors">
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-primary-foreground"
+                        style={{ background: "var(--gradient-saffron)" }}>
+                        {(profile?.display_name ?? user.email ?? "U")[0].toUpperCase()}
+                      </div>
+                      <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <div className="px-3 py-2 border-b border-border">
+                      <p className="text-xs font-semibold font-devanagari text-foreground truncate">
+                        {profile?.display_name ?? user.email?.split("@")[0]}
+                      </p>
+                      <p className="text-xs text-muted-foreground font-devanagari flex items-center gap-1 mt-0.5">
+                        <Zap className="w-3 h-3 text-secondary" />
+                        {profile?.ai_credits ?? 0} {language === "hi" ? "क्रेडिट" : "credits"}
+                      </p>
+                    </div>
+                    <DropdownMenuItem asChild>
+                      <Link to="/profile" className="flex items-center gap-2 font-devanagari cursor-pointer">
+                        <UserCircle className="w-4 h-4" />
+                        {language === "hi" ? "मेरी प्रोफ़ाइल" : "My Profile"}
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => { signOut(); navigate("/"); }}
+                      className="flex items-center gap-2 font-devanagari text-destructive cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      {language === "hi" ? "लॉगआउट" : "Logout"}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Link to="/login">
+                  <button className="p-2 rounded-md text-muted-foreground hover:text-primary hover:bg-muted transition-colors">
+                    <User className="w-4 h-4" />
+                  </button>
+                </Link>
+              )}
 
               {/* Mobile hamburger */}
               <button
