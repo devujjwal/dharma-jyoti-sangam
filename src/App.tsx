@@ -9,6 +9,7 @@ import Index from "./pages/Index.tsx";
 import PanchangPage from "./pages/PanchangPage.tsx";
 import HoroscopePage from "./pages/HoroscopePage.tsx";
 import AstrologerPage from "./pages/AstrologerPage.tsx";
+import KundaliPage from "./pages/KundaliPage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
@@ -30,6 +31,7 @@ const App = () => (
               <Route path="/horoscope" element={<HoroscopePage />} />
               <Route path="/horoscope/:rashiId" element={<HoroscopePage />} />
               <Route path="/ai-astrologer" element={<AstrologerPage />} />
+              <Route path="/kundali" element={<KundaliPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/profile" element={<ProfilePage />} />
