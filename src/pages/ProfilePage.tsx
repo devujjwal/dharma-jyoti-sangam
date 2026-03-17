@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
 import { RASHIS, BHAJANS } from "@/data/astroData";
-import { LogOut, Bookmark, BookOpen, Star, Zap, User, Save } from "lucide-react";
+import { LogOut, Bookmark, BookOpen, Star, Zap, User, Save, ExternalLink, PlusCircle } from "lucide-react";
 
 interface SavedKundali {
   id: string;
