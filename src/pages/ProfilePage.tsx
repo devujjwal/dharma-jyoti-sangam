@@ -44,13 +44,6 @@ const ProfilePage = () => {
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
-  // New kundali form
-  const [newKundaliName, setNewKundaliName] = useState("");
-  const [newKundaliDob, setNewKundaliDob] = useState("");
-  const [newKundaliTob, setNewKundaliTob] = useState("");
-  const [newKundaliPob, setNewKundaliPob] = useState("");
-  const [addingKundali, setAddingKundali] = useState(false);
-
   useEffect(() => {
     if (!user) { navigate("/login"); return; }
     if (profile) {
