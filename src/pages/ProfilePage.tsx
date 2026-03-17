@@ -92,20 +92,6 @@ const ProfilePage = () => {
     }
   };
 
-  const addKundali = async () => {
-    if (!user || !newKundaliName || !newKundaliDob || !newKundaliTob || !newKundaliPob) return;
-    setAddingKundali(true);
-    await supabase.from("saved_kundalis").insert({
-      user_id: user.id,
-      name: newKundaliName,
-      dob: newKundaliDob,
-      tob: newKundaliTob,
-      pob: newKundaliPob,
-    });
-    setNewKundaliName(""); setNewKundaliDob(""); setNewKundaliTob(""); setNewKundaliPob("");
-    setAddingKundali(false);
-    fetchKundalis();
-  };
 
   const deleteKundali = async (id: string) => {
     await supabase.from("saved_kundalis").delete().eq("id", id);
