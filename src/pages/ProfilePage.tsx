@@ -306,47 +306,24 @@ const ProfilePage = () => {
           {/* Kundalis Tab */}
           {activeTab === "kundalis" && (
             <div className="space-y-6">
-              {/* Add new kundali */}
+              {/* Go to Kundali page CTA */}
               <div className="rounded-2xl border border-border bg-card p-6 shadow-card">
-                <h2 className="font-devanagari-serif font-bold text-foreground text-lg mb-4">
-                  {isHi ? "+ नई कुंडली सहेजें" : "+ Save New Kundali"}
-                </h2>
-                <div className="space-y-3">
-                  <Input
-                    value={newKundaliName}
-                    onChange={e => setNewKundaliName(e.target.value)}
-                    placeholder={isHi ? "नाम (जैसे: राम शर्मा)" : "Name (e.g. Rahul Sharma)"}
-                    className="font-devanagari"
-                  />
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <Label className="text-xs text-muted-foreground font-devanagari mb-1 block">
-                        {isHi ? "जन्म तिथि" : "Date of Birth"}
-                      </Label>
-                      <Input type="date" value={newKundaliDob} onChange={e => setNewKundaliDob(e.target.value)} className="font-devanagari" />
-                    </div>
-                    <div>
-                      <Label className="text-xs text-muted-foreground font-devanagari mb-1 block">
-                        {isHi ? "जन्म समय" : "Time of Birth"}
-                      </Label>
-                      <Input type="time" value={newKundaliTob} onChange={e => setNewKundaliTob(e.target.value)} className="font-devanagari" />
-                    </div>
-                  </div>
-                  <Input
-                    value={newKundaliPob}
-                    onChange={e => setNewKundaliPob(e.target.value)}
-                    placeholder={isHi ? "जन्म स्थान" : "Place of Birth"}
-                    className="font-devanagari"
-                  />
-                  <Button
-                    onClick={addKundali}
-                    disabled={addingKundali || !newKundaliName || !newKundaliDob || !newKundaliTob || !newKundaliPob}
-                    className="w-full font-devanagari"
-                    style={{ background: "var(--gradient-saffron)" }}
-                  >
-                    {addingKundali ? (isHi ? "सहेजा जा रहा है..." : "Saving...") : (isHi ? "🔮 कुंडली सहेजें" : "🔮 Save Kundali")}
-                  </Button>
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="font-devanagari-serif font-bold text-foreground text-lg">
+                    {isHi ? "🔮 कुंडली" : "🔮 Kundali Charts"}
+                  </h2>
+                  <Link to="/kundali">
+                    <Button size="sm" className="font-devanagari gap-1.5" style={{ background: "var(--gradient-saffron)" }}>
+                      <PlusCircle className="w-4 h-4" />
+                      {isHi ? "नई कुंडली बनाएं" : "Create New"}
+                    </Button>
+                  </Link>
                 </div>
+                <p className="text-sm text-muted-foreground font-devanagari">
+                  {isHi
+                    ? "उत्तर भारतीय शैली में जन्म कुंडली बनाएं और यहाँ सहेजें।"
+                    : "Generate a North Indian style birth chart and save it here."}
+                </p>
               </div>
 
               {/* Saved kundalis list */}
