@@ -331,23 +331,35 @@ const ProfilePage = () => {
                 <div className="text-center py-12 text-muted-foreground font-devanagari">
                   <div className="text-4xl mb-3">🔮</div>
                   <p>{isHi ? "अभी तक कोई कुंडली सहेजी नहीं है।" : "No kundalis saved yet."}</p>
+                  <Link to="/kundali">
+                    <Button className="mt-4 font-devanagari gap-1.5" style={{ background: "var(--gradient-saffron)" }}>
+                      <PlusCircle className="w-4 h-4" />
+                      {isHi ? "पहली कुंडली बनाएं" : "Create your first Kundali"}
+                    </Button>
+                  </Link>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {savedKundalis.map(k => (
                     <div key={k.id} className="rounded-xl border border-border bg-card p-4 shadow-card flex items-start justify-between gap-3">
-                      <div>
+                      <div className="flex-1 min-w-0">
                         <p className="font-devanagari font-semibold text-foreground">{k.name}</p>
                         <p className="text-xs text-muted-foreground font-devanagari mt-0.5">
                           📅 {k.dob} · ⏰ {k.tob} · 📍 {k.pob}
                         </p>
                       </div>
-                      <button
-                        onClick={() => deleteKundali(k.id)}
-                        className="text-xs text-destructive hover:underline font-devanagari shrink-0"
-                      >
-                        {isHi ? "हटाएं" : "Delete"}
-                      </button>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Link to="/kundali" className="text-xs text-primary hover:underline font-devanagari flex items-center gap-1">
+                          <ExternalLink className="w-3 h-3" />
+                          {isHi ? "देखें" : "View"}
+                        </Link>
+                        <button
+                          onClick={() => deleteKundali(k.id)}
+                          className="text-xs text-destructive hover:underline font-devanagari"
+                        >
+                          {isHi ? "हटाएं" : "Delete"}
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
