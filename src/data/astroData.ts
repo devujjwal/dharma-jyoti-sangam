@@ -227,6 +227,8 @@ export interface Festival {
   id: string;
   nameHi: string;
   nameEn: string;
+  /** ISO date string: YYYY-MM-DD */
+  isoDate: string;
   date: string;
   daysLeft: number;
   deity: string;
@@ -235,36 +237,164 @@ export interface Festival {
   descEn: string;
   color: string;
   emoji: string;
+  type: "tyohar" | "vrat" | "jayanti" | "auspicious";
+  tithi?: string;
 }
 
 export const UPCOMING_FESTIVALS: Festival[] = [
   {
-    id: "holi", nameHi: "होली", nameEn: "Holi",
+    id: "holi", nameHi: "होली", nameEn: "Holi", isoDate: "2025-03-14",
     date: "14 मार्च 2025", daysLeft: 5, deity: "Krishna", deityHi: "श्री कृष्ण",
-    descHi: "रंगों का त्यौहार, बुराई पर अच्छाई की विजय का प्रतीक",
-    descEn: "Festival of colors, symbolizing victory of good over evil",
-    color: "hsl(330 70% 55%)", emoji: "🎨",
+    descHi: "रंगों का त्यौहार, बुराई पर अच्छाई की विजय का प्रतीक। इस दिन होलिका दहन के बाद धुलेंडी पर रंग खेले जाते हैं।",
+    descEn: "Festival of colors, symbolizing victory of good over evil. Celebrated with Holika Dahan bonfire and playing colors.",
+    color: "hsl(330 70% 55%)", emoji: "🎨", type: "tyohar", tithi: "फाल्गुन पूर्णिमा",
   },
   {
-    id: "ramnavami", nameHi: "राम नवमी", nameEn: "Ram Navami",
+    id: "ramnavami", nameHi: "राम नवमी", nameEn: "Ram Navami", isoDate: "2025-04-06",
     date: "6 अप्रैल 2025", daysLeft: 28, deity: "Ram", deityHi: "श्री राम",
-    descHi: "भगवान राम का जन्मोत्सव, चैत्र शुक्ल नवमी",
-    descEn: "Birthday of Lord Rama, Chaitra Shukla Navami",
-    color: "hsl(24 95% 48%)", emoji: "🏹",
+    descHi: "भगवान श्री राम का जन्मोत्सव, चैत्र शुक्ल नवमी को मनाया जाता है। इस दिन व्रत और रामायण पाठ का विशेष महत्व है।",
+    descEn: "Birthday of Lord Rama on Chaitra Shukla Navami. Special significance of fasting and reciting Ramayana.",
+    color: "hsl(24 95% 48%)", emoji: "🏹", type: "jayanti", tithi: "चैत्र शुक्ल नवमी",
   },
   {
-    id: "hanumanjayanti", nameHi: "हनुमान जयंती", nameEn: "Hanuman Jayanti",
+    id: "hanumanjayanti", nameHi: "हनुमान जयंती", nameEn: "Hanuman Jayanti", isoDate: "2025-04-12",
     date: "12 अप्रैल 2025", daysLeft: 34, deity: "Hanuman", deityHi: "श्री हनुमान",
-    descHi: "हनुमान जी का जन्मोत्सव, बल और भक्ति का प्रतीक",
-    descEn: "Birthday of Lord Hanuman, symbol of strength and devotion",
-    color: "hsl(35 95% 50%)", emoji: "🐒",
+    descHi: "हनुमान जी का जन्मोत्सव। इस दिन हनुमान चालीसा पाठ, सुंदरकांड और लाल चोला चढ़ाने का विशेष महत्व है।",
+    descEn: "Birthday of Lord Hanuman. Special significance of Hanuman Chalisa, Sundarkand, and vermilion offering.",
+    color: "hsl(35 95% 50%)", emoji: "🐒", type: "jayanti", tithi: "चैत्र पूर्णिमा",
   },
   {
-    id: "akshayatritiya", nameHi: "अक्षय तृतीया", nameEn: "Akshaya Tritiya",
+    id: "akshayatritiya", nameHi: "अक्षय तृतीया", nameEn: "Akshaya Tritiya", isoDate: "2025-04-30",
     date: "30 अप्रैल 2025", daysLeft: 52, deity: "Vishnu-Lakshmi", deityHi: "विष्णु-लक्ष्मी",
-    descHi: "शुभ एवं अक्षय फलदायी दिन, सोने की खरीद शुभ",
-    descEn: "Eternally auspicious day, gold purchase considered lucky",
-    color: "hsl(43 95% 50%)", emoji: "✨",
+    descHi: "अत्यंत शुभ एवं अक्षय फलदायी दिन। इस दिन सोने की खरीद, नया कार्य आरंभ और दान-पुण्य का विशेष महत्व है।",
+    descEn: "Highly auspicious day with eternal merit. Gold purchase, new ventures, and charity are especially blessed.",
+    color: "hsl(43 95% 50%)", emoji: "✨", type: "auspicious", tithi: "वैशाख शुक्ल तृतीया",
+  },
+  {
+    id: "buddhapoornima", nameHi: "बुद्ध पूर्णिमा", nameEn: "Buddha Purnima", isoDate: "2025-05-12",
+    date: "12 मई 2025", daysLeft: 64, deity: "Buddha", deityHi: "गौतम बुद्ध",
+    descHi: "भगवान गौतम बुद्ध की जयंती। वैशाख पूर्णिमा को बुद्ध जन्म, ज्ञान प्राप्ति और महापरिनिर्वाण तीनों हुए।",
+    descEn: "Birthday of Lord Gautama Buddha. Vaishakha Purnima marks his birth, enlightenment, and parinirvana.",
+    color: "hsl(200 60% 45%)", emoji: "☸️", type: "jayanti", tithi: "वैशाख पूर्णिमा",
+  },
+  {
+    id: "nirjalekadashi", nameHi: "निर्जला एकादशी", nameEn: "Nirjala Ekadashi", isoDate: "2025-06-06",
+    date: "6 जून 2025", daysLeft: 89, deity: "Vishnu", deityHi: "भगवान विष्णु",
+    descHi: "वर्ष की सबसे महत्वपूर्ण एकादशी। इस दिन निर्जल (बिना पानी) व्रत रखने से सभी एकादशियों का फल मिलता है।",
+    descEn: "The most important Ekadashi of the year. Observing a waterless fast grants merit of all 24 Ekadashis.",
+    color: "hsl(220 60% 45%)", emoji: "🌊", type: "vrat", tithi: "ज्येष्ठ शुक्ल एकादशी",
+  },
+  {
+    id: "gurupurnima", nameHi: "गुरु पूर्णिमा", nameEn: "Guru Purnima", isoDate: "2025-07-10",
+    date: "10 जुलाई 2025", daysLeft: 123, deity: "Guru", deityHi: "गुरु",
+    descHi: "गुरु की महिमा का पर्व। आषाढ़ पूर्णिमा को महर्षि वेद व्यास की जयंती और गुरु पूजन का दिन।",
+    descEn: "Festival honoring the Guru lineage. Ashadha Purnima marks Maharishi Veda Vyasa's birthday.",
+    color: "hsl(43 95% 50%)", emoji: "🙏", type: "tyohar", tithi: "आषाढ़ पूर्णिमा",
+  },
+  {
+    id: "naagrpanchami", nameHi: "नाग पंचमी", nameEn: "Nag Panchami", isoDate: "2025-07-29",
+    date: "29 जुलाई 2025", daysLeft: 142, deity: "Shiva-Naag", deityHi: "शिव-नाग",
+    descHi: "नाग देवता की पूजा का पर्व। श्रावण शुक्ल पंचमी को नागों की पूजा करने से परिवार की रक्षा होती है।",
+    descEn: "Festival of serpent worship. Worshipping Naga Devata on Shravana Shukla Panchami protects the family.",
+    color: "hsl(150 50% 38%)", emoji: "🐍", type: "tyohar", tithi: "श्रावण शुक्ल पंचमी",
+  },
+  {
+    id: "rakshabandhan", nameHi: "रक्षा बंधन", nameEn: "Raksha Bandhan", isoDate: "2025-08-09",
+    date: "9 अगस्त 2025", daysLeft: 153, deity: "Vishnu", deityHi: "भगवान विष्णु",
+    descHi: "भाई-बहन के अटूट प्रेम का पर्व। बहन भाई की कलाई पर राखी बाँधती है और भाई रक्षा का संकल्प लेता है।",
+    descEn: "Festival of the unbreakable bond between siblings. Sisters tie Rakhi and brothers pledge protection.",
+    color: "hsl(330 65% 55%)", emoji: "🪢", type: "tyohar", tithi: "श्रावण पूर्णिमा",
+  },
+  {
+    id: "janmashtami", nameHi: "जन्माष्टमी", nameEn: "Janmashtami", isoDate: "2025-08-16",
+    date: "16 अगस्त 2025", daysLeft: 160, deity: "Krishna", deityHi: "श्री कृष्ण",
+    descHi: "भगवान श्री कृष्ण का जन्मोत्सव। भाद्रपद कृष्ण अष्टमी को रात्रि 12 बजे श्री कृष्ण जन्म मनाया जाता है।",
+    descEn: "Birthday of Lord Krishna. Midnight celebration of Krishna's birth on Bhadrapada Krishna Ashtami.",
+    color: "hsl(220 70% 48%)", emoji: "🪶", type: "jayanti", tithi: "भाद्रपद कृष्ण अष्टमी",
+  },
+  {
+    id: "ganeshchaturthi", nameHi: "गणेश चतुर्थी", nameEn: "Ganesh Chaturthi", isoDate: "2025-08-27",
+    date: "27 अगस्त 2025", daysLeft: 171, deity: "Ganesha", deityHi: "श्री गणेश",
+    descHi: "भगवान गणेश के जन्मोत्सव का महापर्व। 10 दिन तक चलने वाले इस उत्सव में गणपति की प्रतिष्ठा और विसर्जन होता है।",
+    descEn: "Grand festival of Lord Ganesha's birth. 10-day celebration with installation and immersion of Ganesha idol.",
+    color: "hsl(35 95% 50%)", emoji: "🐘", type: "tyohar", tithi: "भाद्रपद शुक्ल चतुर्थी",
+  },
+  {
+    id: "navratri-sharad", nameHi: "शारदीय नवरात्रि", nameEn: "Sharad Navratri", isoDate: "2025-09-22",
+    date: "22 सितंबर 2025", daysLeft: 197, deity: "Durga", deityHi: "माँ दुर्गा",
+    descHi: "माँ दुर्गा के नौ रूपों की पूजा का महापर्व। नौ दिनों तक विभिन्न देवियों का पूजन, व्रत और गरबा होता है।",
+    descEn: "Grand festival worshipping nine forms of Goddess Durga. Nine days of puja, fasting, and Garba.",
+    color: "hsl(355 75% 35%)", emoji: "🔱", type: "tyohar", tithi: "अश्विन शुक्ल प्रतिपदा",
+  },
+  {
+    id: "dussehra", nameHi: "दशहरा", nameEn: "Dussehra", isoDate: "2025-10-02",
+    date: "2 अक्टूबर 2025", daysLeft: 207, deity: "Ram-Durga", deityHi: "श्री राम-दुर्गा",
+    descHi: "बुराई पर अच्छाई की विजय का पर्व। इस दिन रावण दहन होता है और माँ दुर्गा की विजय का उत्सव मनाया जाता है।",
+    descEn: "Victory of good over evil. Ravana effigy burning and celebration of Goddess Durga's victory.",
+    color: "hsl(24 95% 48%)", emoji: "🏹", type: "tyohar", tithi: "अश्विन शुक्ल दशमी",
+  },
+  {
+    id: "karvachauth", nameHi: "करवा चौथ", nameEn: "Karva Chauth", isoDate: "2025-10-10",
+    date: "10 अक्टूबर 2025", daysLeft: 215, deity: "Moon-Shiva", deityHi: "चंद्र-शिव",
+    descHi: "सुहागिन स्त्रियों का व्रत। पत्नियाँ अपने पति की दीर्घायु के लिए निर्जल व्रत रखती हैं और चंद्रोदय के बाद व्रत तोड़ती हैं।",
+    descEn: "Married women's vrat for husband's longevity. Waterless fast broken only after moonrise.",
+    color: "hsl(43 95% 50%)", emoji: "🌙", type: "vrat", tithi: "कार्तिक कृष्ण चतुर्थी",
+  },
+  {
+    id: "dhanteras", nameHi: "धनतेरस", nameEn: "Dhanteras", isoDate: "2025-10-20",
+    date: "20 अक्टूबर 2025", daysLeft: 225, deity: "Lakshmi-Kuber", deityHi: "लक्ष्मी-कुबेर",
+    descHi: "धन और समृद्धि का पर्व। इस दिन सोने-चाँदी और बर्तन खरीदना शुभ माना जाता है। यमराज के लिए दीपदान होता है।",
+    descEn: "Festival of wealth and prosperity. Buying gold, silver, and utensils is auspicious. Lamps lit for Yama.",
+    color: "hsl(43 95% 50%)", emoji: "💰", type: "tyohar", tithi: "कार्तिक कृष्ण त्रयोदशी",
+  },
+  {
+    id: "diwali", nameHi: "दीपावली", nameEn: "Diwali", isoDate: "2025-10-20",
+    date: "20 अक्टूबर 2025", daysLeft: 225, deity: "Lakshmi", deityHi: "माँ लक्ष्मी",
+    descHi: "प्रकाश का महापर्व। इस दिन माँ लक्ष्मी और भगवान गणेश की पूजा होती है और दीप जलाकर अमावस्या की रात जगमगाई जाती है।",
+    descEn: "Grand festival of lights. Lakshmi and Ganesha puja, lighting countless lamps on the new moon night.",
+    color: "hsl(43 95% 50%)", emoji: "🪔", type: "tyohar", tithi: "कार्तिक अमावस्या",
+  },
+  {
+    id: "chhathpuja", nameHi: "छठ पूजा", nameEn: "Chhath Puja", isoDate: "2025-10-28",
+    date: "28 अक्टूबर 2025", daysLeft: 233, deity: "Surya", deityHi: "सूर्य देव",
+    descHi: "सूर्य देव की उपासना का महापर्व। चार दिनों तक कठिन व्रत, नदी में अर्घ्य और सूर्योदय-सूर्यास्त पूजन होता है।",
+    descEn: "Grand festival of Sun worship. Four days of strict fasting, river offerings, and sunrise-sunset puja.",
+    color: "hsl(35 95% 50%)", emoji: "☀️", type: "tyohar", tithi: "कार्तिक शुक्ल षष्ठी",
+  },
+  {
+    id: "kartikpurnima", nameHi: "कार्तिक पूर्णिमा", nameEn: "Kartik Purnima", isoDate: "2025-11-05",
+    date: "5 नवंबर 2025", daysLeft: 241, deity: "Vishnu-Shiva", deityHi: "विष्णु-शिव",
+    descHi: "देव दीपावली का पर्व। इस दिन गंगा स्नान और दीपदान का विशेष महत्व है। तुलसी विवाह भी इसी माह होता है।",
+    descEn: "Dev Diwali festival. Sacred Ganga bath and lamp offering hold special significance.",
+    color: "hsl(220 60% 45%)", emoji: "🌕", type: "tyohar", tithi: "कार्तिक पूर्णिमा",
+  },
+  {
+    id: "geeta-jayanti", nameHi: "गीता जयंती", nameEn: "Gita Jayanti", isoDate: "2025-12-01",
+    date: "1 दिसंबर 2025", daysLeft: 267, deity: "Krishna", deityHi: "श्री कृष्ण",
+    descHi: "श्रीमद्भगवद्गीता के प्रकट होने का दिन। मार्गशीर्ष शुक्ल एकादशी को भगवान कृष्ण ने अर्जुन को गीता का उपदेश दिया।",
+    descEn: "Day of Bhagavad Gita's revelation. Lord Krishna delivered the Gita teaching to Arjuna on this day.",
+    color: "hsl(220 70% 48%)", emoji: "📖", type: "tyohar", tithi: "मार्गशीर्ष शुक्ल एकादशी",
+  },
+  {
+    id: "makar-sankranti", nameHi: "मकर संक्रान्ति", nameEn: "Makar Sankranti", isoDate: "2026-01-14",
+    date: "14 जनवरी 2026", daysLeft: 311, deity: "Surya", deityHi: "सूर्य देव",
+    descHi: "सूर्य के मकर राशि में प्रवेश का पर्व। इस दिन तिल-गुड़ खाना, पतंग उड़ाना और पवित्र नदियों में स्नान शुभ है।",
+    descEn: "Sun's transit into Capricorn. Eating til-gur, flying kites, and holy river bathing are auspicious.",
+    color: "hsl(35 95% 50%)", emoji: "🪁", type: "tyohar", tithi: "मकर संक्रान्ति",
+  },
+  {
+    id: "vasantpanchami", nameHi: "वसंत पंचमी", nameEn: "Vasant Panchami", isoDate: "2026-02-02",
+    date: "2 फरवरी 2026", daysLeft: 330, deity: "Saraswati", deityHi: "माँ सरस्वती",
+    descHi: "माँ सरस्वती की पूजा और वसंत ऋतु के आगमन का पर्व। इस दिन पीले वस्त्र पहनना और विद्या आरंभ करना शुभ है।",
+    descEn: "Worship of Goddess Saraswati and arrival of spring. Wearing yellow and beginning education is auspicious.",
+    color: "hsl(43 95% 50%)", emoji: "🌼", type: "jayanti", tithi: "माघ शुक्ल पंचमी",
+  },
+  {
+    id: "mahashivratri", nameHi: "महाशिवरात्रि", nameEn: "Maha Shivratri", isoDate: "2026-02-26",
+    date: "26 फरवरी 2026", daysLeft: 354, deity: "Shiva", deityHi: "भगवान शिव",
+    descHi: "शिव की महान रात। इस रात्रि जागरण करके शिव पूजन, अभिषेक और महामृत्युंजय जाप का विशेष महत्व है।",
+    descEn: "Great Night of Shiva. All-night vigil with Shiva puja, abhishek, and Mahamrityunjaya chanting.",
+    color: "hsl(270 50% 40%)", emoji: "🔱", type: "tyohar", tithi: "फाल्गुन कृष्ण चतुर्दशी",
   },
 ];
 
