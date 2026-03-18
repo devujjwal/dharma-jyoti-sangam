@@ -11,6 +11,7 @@ import HoroscopePage from "./pages/HoroscopePage.tsx";
 import AstrologerPage from "./pages/AstrologerPage.tsx";
 import KundaliPage from "./pages/KundaliPage.tsx";
 import KundaliMatchingPage from "./pages/KundaliMatchingPage.tsx";
+import FestivalsPage from "./pages/FestivalsPage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
@@ -34,6 +35,7 @@ const App = () => (
               <Route path="/ai-astrologer" element={<AstrologerPage />} />
               <Route path="/kundali" element={<KundaliPage />} />
               <Route path="/kundali-matching" element={<KundaliMatchingPage />} />
+              <Route path="/festivals" element={<FestivalsPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/profile" element={<ProfilePage />} />
