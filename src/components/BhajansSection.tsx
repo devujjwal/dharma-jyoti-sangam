@@ -1,8 +1,11 @@
-import { useState } from "react";
-import { Play, Lock } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Play, Lock, Bookmark, BookmarkCheck } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { BHAJANS } from "@/data/astroData";
 import { Link } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
 
 const formatPlays = (n: number): string => {
   if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`;
@@ -21,7 +24,103 @@ const DEITY_COLORS: Record<string, string> = {
 
 const BhajansSection = () => {
   const { language, t } = useLanguage();
+  const { user } = useAuth();
   const [playing, setPlaying] = useState<string | null>(null);
+  const [bookmarks, setBookmarks] = useState<Set<string>>(new Set());
+  const [loadingBookmark, setLoadingBookmark] = useState<string | null>(null);
+
+  // Fetch existing bookmarks when user is logged in
+  useEffect(() => {
+    if (!user) {
+      setBookmarks(new Set());
+      return;
+    }
+    const fetchBookmarks = async () => {
+      const { data } = await supabase
+        .from("bookmarked_bhajans")
+        .select("bhajan_id")
+        .eq("user_id", user.id);
+      if (data) {
+        setBookmarks(new Set(data.map((r) => r.bhajan_id)));
+      }
+    };
+    fetchBookmarks();
+  }, [user]);
+
+  const toggleBookmark = async (bhajanId: string, titleHi: string, titleEn: string) => {
+    if (!user) {
+      toast({
+        title: language === "hi" ? "लॉगिन करें" : "Please log in",
+        description:
+          language === "hi"
+            ? "भजन बुकमार्क करने के लिए लॉगिन करें।"
+            : "Sign in to bookmark bhajans.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoadingBookmark(bhajanId);
+    const isBookmarked = bookmarks.has(bhajanId);
+
+    // Optimistic update
+    setBookmarks((prev) => {
+      const next = new Set(prev);
+      if (isBookmarked) next.delete(bhajanId);
+      else next.add(bhajanId);
+      return next;
+    });
+
+    try {
+      if (isBookmarked) {
+        const { error } = await supabase
+          .from("bookmarked_bhajans")
+          .delete()
+          .eq("user_id", user.id)
+          .eq("bhajan_id", bhajanId);
+
+        if (error) throw error;
+
+        toast({
+          title: language === "hi" ? "बुकमार्क हटाया" : "Bookmark removed",
+          description:
+            language === "hi"
+              ? `"${titleHi}" बुकमार्क से हटा दिया।`
+              : `"${titleEn}" removed from bookmarks.`,
+        });
+      } else {
+        const { error } = await supabase
+          .from("bookmarked_bhajans")
+          .insert({ user_id: user.id, bhajan_id: bhajanId });
+
+        if (error) throw error;
+
+        toast({
+          title: language === "hi" ? "बुकमार्क किया" : "Bookmarked",
+          description:
+            language === "hi"
+              ? `"${titleHi}" बुकमार्क में जोड़ा।`
+              : `"${titleEn}" added to bookmarks.`,
+        });
+      }
+    } catch {
+      // Revert optimistic update on error
+      setBookmarks((prev) => {
+        const next = new Set(prev);
+        if (isBookmarked) next.add(bhajanId);
+        else next.delete(bhajanId);
+        return next;
+      });
+      toast({
+        title: language === "hi" ? "त्रुटि" : "Error",
+        description:
+          language === "hi" ? "कुछ गड़बड़ हुई, पुनः प्रयास करें।" : "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingBookmark(null);
+    }
+  };
 
   return (
     <section className="py-12">
@@ -44,6 +143,8 @@ const BhajansSection = () => {
           {BHAJANS.map((bhajan) => {
             const color = DEITY_COLORS[bhajan.deity] || "hsl(24 95% 48%)";
             const isPlaying = playing === bhajan.id;
+            const isBookmarked = bookmarks.has(bhajan.id);
+            const isLoadingThis = loadingBookmark === bhajan.id;
 
             return (
               <div
@@ -77,16 +178,47 @@ const BhajansSection = () => {
                         <h4 className="font-devanagari-serif font-bold text-foreground text-base leading-tight">
                           {language === "hi" ? bhajan.titleHi : bhajan.titleEn}
                         </h4>
-                        {!bhajan.isFree && (
-                          <span className="shrink-0 text-xs px-2 py-0.5 rounded-full font-bold"
-                            style={{ background: "hsl(43 95% 50% / 0.15)", color: "hsl(43 95% 40%)" }}>
-                            Premium
-                          </span>
-                        )}
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {!bhajan.isFree && (
+                            <span
+                              className="text-xs px-2 py-0.5 rounded-full font-bold"
+                              style={{ background: "hsl(43 95% 50% / 0.15)", color: "hsl(43 95% 40%)" }}
+                            >
+                              Premium
+                            </span>
+                          )}
+                          {/* Bookmark button */}
+                          <button
+                            onClick={() => toggleBookmark(bhajan.id, bhajan.titleHi, bhajan.titleEn)}
+                            disabled={isLoadingThis}
+                            className="w-7 h-7 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 disabled:opacity-50"
+                            style={{
+                              background: isBookmarked
+                                ? `${color}20`
+                                : "hsl(var(--muted) / 0.5)",
+                            }}
+                            title={
+                              isBookmarked
+                                ? language === "hi" ? "बुकमार्क हटाएं" : "Remove bookmark"
+                                : language === "hi" ? "बुकमार्क करें" : "Bookmark"
+                            }
+                          >
+                            {isBookmarked ? (
+                              <BookmarkCheck
+                                className="w-3.5 h-3.5"
+                                style={{ color }}
+                              />
+                            ) : (
+                              <Bookmark className="w-3.5 h-3.5 text-muted-foreground" />
+                            )}
+                          </button>
+                        </div>
                       </div>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-xs px-1.5 py-0.5 rounded font-devanagari"
-                          style={{ background: `${color}15`, color }}>
+                        <span
+                          className="text-xs px-1.5 py-0.5 rounded font-devanagari"
+                          style={{ background: `${color}15`, color }}
+                        >
                           {bhajan.category}
                         </span>
                         <span className="text-xs text-muted-foreground">{bhajan.duration}</span>
@@ -102,12 +234,15 @@ const BhajansSection = () => {
                   {isPlaying && (
                     <div className="flex items-center gap-0.5 mt-3 px-1">
                       {[4, 7, 5, 9, 6, 8, 4, 7, 5].map((h, i) => (
-                        <div key={i} className="rounded-full w-1"
+                        <div
+                          key={i}
+                          className="rounded-full w-1"
                           style={{
                             height: `${h * 2}px`,
                             background: color,
                             animation: `glow-pulse ${0.4 + i * 0.1}s ease-in-out infinite alternate`,
-                          }} />
+                          }}
+                        />
                       ))}
                       <span className="ml-2 text-xs font-devanagari text-muted-foreground">चल रहा है...</span>
                     </div>
