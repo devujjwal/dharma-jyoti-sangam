@@ -13,6 +13,8 @@ import { calculateKundali, PLANET_LABELS, RASHI_ORDER } from "@/lib/kundaliCalc"
 import { RASHIS } from "@/data/astroData";
 import { Save, RefreshCw, Star, Sun, Info, LogIn } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import DoshaCards from "@/components/DoshaCards";
+import { detectManglikDosha, detectKaalSarpDosha } from "@/lib/kundaliCalc";
 
 const HOUSE_MEANINGS = [
   { hi: "तनु (स्वयं)", en: "Self & Body" },
