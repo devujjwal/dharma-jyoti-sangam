@@ -141,3 +141,56 @@ export const PLANET_LABELS: Record<string, { hi: string; full: string }> = {
   Ra: { hi: "राहु", full: "Rahu" },
   Ke: { hi: "केतु", full: "Ketu" },
 };
+
+// ── Dosha Detection ───────────────────────────────────────────────────────────
+
+export interface DoshaResult {
+  present: boolean;
+  /** Mars house (for Manglik) or Rahu/Ketu pair (for KaalSarp) */
+  detail: string;
+}
+
+/**
+ * Manglik Dosha: Mars (Ma) placed in houses 1, 2, 4, 7, 8, or 12.
+ */
+export function detectManglikDosha(planets: PlanetPlacement[]): DoshaResult {
+  const mars = planets.find(p => p.planet === "Ma");
+  if (!mars) return { present: false, detail: "" };
+  const MANGLIK_HOUSES = [1, 2, 4, 7, 8, 12];
+  const present = MANGLIK_HOUSES.includes(mars.house);
+  return {
+    present,
+    detail: `Mars in House ${mars.house}`,
+  };
+}
+
+/**
+ * Kaal Sarp Dosha: all 7 classical planets are hemmed between Rahu and Ketu
+ * (i.e., all fall within the arc from Rahu to Ketu going clockwise).
+ */
+export function detectKaalSarpDosha(planets: PlanetPlacement[]): DoshaResult {
+  const rahu = planets.find(p => p.planet === "Ra");
+  const ketu = planets.find(p => p.planet === "Ke");
+  if (!rahu || !ketu) return { present: false, detail: "" };
+
+  const rahuH = rahu.house;
+  const ketuH = ketu.house;
+
+  // Classical planets only (exclude Ra/Ke)
+  const classical = planets.filter(p => !["Ra", "Ke"].includes(p.planet));
+
+  // Build the arc from Rahu → Ketu clockwise (increasing house numbers, wrapping at 12)
+  const arcRahuToKetu: number[] = [];
+  let h = rahuH;
+  while (h !== ketuH) {
+    arcRahuToKetu.push(h);
+    h = (h % 12) + 1;
+  }
+  arcRahuToKetu.push(ketuH);
+
+  const allInArc = classical.every(p => arcRahuToKetu.includes(p.house));
+  return {
+    present: allInArc,
+    detail: `Rahu H${rahuH} – Ketu H${ketuH}`,
+  };
+}
