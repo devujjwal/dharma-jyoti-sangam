@@ -344,6 +344,13 @@ export default function KundaliPage() {
                       })}
                     </div>
                   </div>
+
+                  {/* Dosha Cards */}
+                  <DoshaCards
+                    manglik={detectManglikDosha(kundali.planets)}
+                    kaalSarp={detectKaalSarpDosha(kundali.planets)}
+                    isHi={isHi}
+                  />
                 </>
               )}
             </div>
