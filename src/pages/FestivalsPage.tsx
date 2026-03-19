@@ -1,10 +1,48 @@
 import { useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight, X, Calendar, Star, Info } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Calendar, Star, Info, CalendarPlus } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { UPCOMING_FESTIVALS, Festival } from "@/data/astroData";
 import { Button } from "@/components/ui/button";
+
+// ── .ics generator ────────────────────────────────────────────────────────────
+function downloadICS(festival: Festival) {
+  const [y, m, d] = festival.isoDate.split("-").map(Number);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const dateStr = `${y}${pad(m)}${pad(d)}`;
+  const nextDate = new Date(y, m - 1, d + 1);
+  const endStr = `${nextDate.getFullYear()}${pad(nextDate.getMonth() + 1)}${pad(nextDate.getDate())}`;
+  const uid = `${festival.id}-${dateStr}@divyajyoti`;
+  const summary = `${festival.emoji} ${festival.nameEn}`;
+  const desc = festival.descEn.replace(/\n/g, "\\n");
+
+  const ics = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Divya Jyoti//Festival Calendar//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    `UID:${uid}`,
+    `DTSTART;VALUE=DATE:${dateStr}`,
+    `DTEND;VALUE=DATE:${endStr}`,
+    `SUMMARY:${summary}`,
+    `DESCRIPTION:${desc}`,
+    festival.tithi ? `LOCATION:Tithi: ${festival.tithi}` : "",
+    "TRANSP:TRANSPARENT",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].filter(Boolean).join("\r\n");
+
+  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${festival.id}.ics`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -354,13 +392,23 @@ const FestivalsPage = () => {
                 </p>
               </div>
 
-              <Button
-                className="w-full mt-4 font-devanagari"
-                style={{ background: "var(--gradient-saffron)" }}
-                onClick={() => setSelected(null)}
-              >
-                {isHi ? "बंद करें" : "Close"}
-              </Button>
+              <div className="flex gap-3 mt-4">
+                <Button
+                  variant="outline"
+                  className="flex-1 font-devanagari gap-2 border-border text-foreground hover:bg-muted"
+                  onClick={() => downloadICS(selected)}
+                >
+                  <CalendarPlus className="w-4 h-4 shrink-0" />
+                  {isHi ? "कैलेंडर में जोड़ें" : "Add to Calendar"}
+                </Button>
+                <Button
+                  className="flex-1 font-devanagari"
+                  style={{ background: "var(--gradient-saffron)" }}
+                  onClick={() => setSelected(null)}
+                >
+                  {isHi ? "बंद करें" : "Close"}
+                </Button>
+              </div>
             </div>
           </div>
         </div>
