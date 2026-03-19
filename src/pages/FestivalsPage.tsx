@@ -392,13 +392,23 @@ const FestivalsPage = () => {
                 </p>
               </div>
 
-              <Button
-                className="w-full mt-4 font-devanagari"
-                style={{ background: "var(--gradient-saffron)" }}
-                onClick={() => setSelected(null)}
-              >
-                {isHi ? "बंद करें" : "Close"}
-              </Button>
+              <div className="flex gap-3 mt-4">
+                <Button
+                  variant="outline"
+                  className="flex-1 font-devanagari gap-2 border-border text-foreground hover:bg-muted"
+                  onClick={() => downloadICS(selected)}
+                >
+                  <CalendarPlus className="w-4 h-4 shrink-0" />
+                  {isHi ? "कैलेंडर में जोड़ें" : "Add to Calendar"}
+                </Button>
+                <Button
+                  className="flex-1 font-devanagari"
+                  style={{ background: "var(--gradient-saffron)" }}
+                  onClick={() => setSelected(null)}
+                >
+                  {isHi ? "बंद करें" : "Close"}
+                </Button>
+              </div>
             </div>
           </div>
         </div>
