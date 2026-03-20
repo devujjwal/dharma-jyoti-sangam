@@ -65,6 +65,33 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_horoscopes: {
+        Row: {
+          content_en: string
+          content_hi: string
+          created_at: string
+          horoscope_date: string
+          id: string
+          rashi_id: string
+        }
+        Insert: {
+          content_en: string
+          content_hi: string
+          created_at?: string
+          horoscope_date?: string
+          id?: string
+          rashi_id: string
+        }
+        Update: {
+          content_en?: string
+          content_hi?: string
+          created_at?: string
+          horoscope_date?: string
+          id?: string
+          rashi_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           ai_credits: number
