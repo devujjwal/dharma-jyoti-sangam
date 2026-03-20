@@ -357,6 +357,26 @@ const AstrologerPage = () => {
         }
       }
 
+      // Persist both messages to DB
+      if (convId && fullContent) {
+        const rows = [
+          { user_id: user!.id, conversation_id: convId, role: "user", content: userMsg.content },
+          { user_id: user!.id, conversation_id: convId, role: "assistant", content: fullContent },
+        ];
+        supabase.from("chat_messages").insert(rows).then(({ error: insertErr }) => {
+          if (insertErr) console.error("Failed to persist chat:", insertErr);
+        });
+        // Update past conversations list
+        setPastConversations(prev => {
+          const exists = prev.some(c => c.id === convId);
+          if (exists) return prev;
+          return [
+            { id: convId!, preview: userMsg.content.slice(0, 60), date: new Date().toLocaleDateString(isHi ? "hi-IN" : "en-IN") },
+            ...prev,
+          ];
+        });
+      }
+
       if (credits !== null && credits - 1 <= 0) {
         setTimeout(() => setShowUpsell(true), 1800);
       }
