@@ -230,6 +230,13 @@ const AstrologerPage = () => {
       timestamp: new Date(),
     };
 
+    // Create or reuse conversation id
+    let convId = conversationId;
+    if (!convId) {
+      convId = crypto.randomUUID();
+      setConversationId(convId);
+    }
+
     // Build conversation history (exclude welcome message)
     const history = messages
       .filter(m => m.id !== "welcome")
