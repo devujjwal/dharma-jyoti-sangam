@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Lock, Info, ChevronDown, User, Sparkles, LogIn } from "lucide-react";
+import { Send, Lock, Info, ChevronDown, User, Sparkles, LogIn, History, Plus, Loader2 } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -104,8 +104,21 @@ const AstrologerPage = () => {
   const [showDobForm, setShowDobForm] = useState(false);
   const [showUpsell, setShowUpsell] = useState(false);
   const [birthDetails, setBirthDetails] = useState({ date: "", time: "", place: "" });
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+  const [pastConversations, setPastConversations] = useState<{ id: string; preview: string; date: string }[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+
+  const welcomeMessage: Message = {
+    id: "welcome",
+    role: "assistant",
+    content: isHi
+      ? "🙏 नमस्ते! मैं दिव्य ज्योति का AI ज्योतिषी हूं। मैं आपके ज्योतिष, धर्म और अध्यात्म संबंधी प्रश्नों का उत्तर देने के लिए तत्पर हूं।\n\nआप मुझसे पूछ सकते हैं:\n• राशिफल और ग्रह-नक्षत्र के बारे में\n• कुंडली और जन्मपत्री विश्लेषण\n• शुभ मुहूर्त और व्रत-त्यौहार\n• वास्तु और उपाय"
+      : "🙏 Namaste! I am Divya Jyoti's AI Astrologer. I am ready to answer your questions on astrology, religion and spirituality.\n\nYou can ask me about:\n• Horoscope and planetary positions\n• Kundali and birth chart analysis\n• Auspicious timings and festivals\n• Vastu and remedies",
+    timestamp: new Date(),
+  };
 
   // Fetch credits on mount
   useEffect(() => {
@@ -120,18 +133,73 @@ const AstrologerPage = () => {
       });
   }, [user]);
 
-  // Set welcome message (language-aware)
+  // Load past conversations list
   useEffect(() => {
-    setMessages([
-      {
-        id: "welcome",
-        role: "assistant",
-        content: isHi
-          ? "🙏 नमस्ते! मैं दिव्य ज्योति का AI ज्योतिषी हूं। मैं आपके ज्योतिष, धर्म और अध्यात्म संबंधी प्रश्नों का उत्तर देने के लिए तत्पर हूं।\n\nआप मुझसे पूछ सकते हैं:\n• राशिफल और ग्रह-नक्षत्र के बारे में\n• कुंडली और जन्मपत्री विश्लेषण\n• शुभ मुहूर्त और व्रत-त्यौहार\n• वास्तु और उपाय"
-          : "🙏 Namaste! I am Divya Jyoti's AI Astrologer. I am ready to answer your questions on astrology, religion and spirituality.\n\nYou can ask me about:\n• Horoscope and planetary positions\n• Kundali and birth chart analysis\n• Auspicious timings and festivals\n• Vastu and remedies",
-        timestamp: new Date(),
-      },
-    ]);
+    if (!user) return;
+    const loadConversations = async () => {
+      // Get distinct conversation_ids with their first user message as preview
+      const { data } = await supabase
+        .from("chat_messages")
+        .select("conversation_id, content, role, created_at")
+        .eq("user_id", user.id)
+        .eq("role", "user")
+        .order("created_at", { ascending: false });
+
+      if (data && data.length > 0) {
+        // Group by conversation_id, take first user message as preview
+        const seen = new Map<string, { preview: string; date: string }>();
+        for (const row of data) {
+          if (!seen.has(row.conversation_id)) {
+            seen.set(row.conversation_id, {
+              preview: row.content.slice(0, 60) + (row.content.length > 60 ? "…" : ""),
+              date: new Date(row.created_at).toLocaleDateString(isHi ? "hi-IN" : "en-IN"),
+            });
+          }
+        }
+        setPastConversations(
+          Array.from(seen.entries()).map(([id, v]) => ({ id, ...v }))
+        );
+      }
+    };
+    loadConversations();
+  }, [user, isHi]);
+
+  // Load a specific conversation
+  const loadConversation = async (convId: string) => {
+    setLoadingHistory(true);
+    setConversationId(convId);
+    setShowHistory(false);
+    const { data } = await supabase
+      .from("chat_messages")
+      .select("id, role, content, created_at")
+      .eq("user_id", user!.id)
+      .eq("conversation_id", convId)
+      .order("created_at", { ascending: true });
+
+    if (data && data.length > 0) {
+      setMessages([
+        welcomeMessage,
+        ...data.map((row) => ({
+          id: row.id,
+          role: row.role as "user" | "assistant",
+          content: row.content,
+          timestamp: new Date(row.created_at),
+        })),
+      ]);
+    }
+    setLoadingHistory(false);
+  };
+
+  // Start a new conversation
+  const startNewConversation = () => {
+    setConversationId(null);
+    setMessages([welcomeMessage]);
+    setShowHistory(false);
+  };
+
+  // Set welcome message on mount
+  useEffect(() => {
+    setMessages([welcomeMessage]);
   }, [isHi]);
 
   useEffect(() => {
@@ -161,6 +229,13 @@ const AstrologerPage = () => {
       content: input.trim(),
       timestamp: new Date(),
     };
+
+    // Create or reuse conversation id
+    let convId = conversationId;
+    if (!convId) {
+      convId = crypto.randomUUID();
+      setConversationId(convId);
+    }
 
     // Build conversation history (exclude welcome message)
     const history = messages
@@ -282,6 +357,26 @@ const AstrologerPage = () => {
         }
       }
 
+      // Persist both messages to DB
+      if (convId && fullContent) {
+        const rows = [
+          { user_id: user!.id, conversation_id: convId, role: "user", content: userMsg.content },
+          { user_id: user!.id, conversation_id: convId, role: "assistant", content: fullContent },
+        ];
+        supabase.from("chat_messages").insert(rows).then(({ error: insertErr }) => {
+          if (insertErr) console.error("Failed to persist chat:", insertErr);
+        });
+        // Update past conversations list
+        setPastConversations(prev => {
+          const exists = prev.some(c => c.id === convId);
+          if (exists) return prev;
+          return [
+            { id: convId!, preview: userMsg.content.slice(0, 60), date: new Date().toLocaleDateString(isHi ? "hi-IN" : "en-IN") },
+            ...prev,
+          ];
+        });
+      }
+
       if (credits !== null && credits - 1 <= 0) {
         setTimeout(() => setShowUpsell(true), 1800);
       }
@@ -327,16 +422,36 @@ const AstrologerPage = () => {
             </div>
           </div>
 
-          {/* Credits tracker */}
+          {/* History + Credits */}
           {user ? (
-            <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-border bg-card">
-              <Sparkles className="w-4 h-4 text-secondary" />
-              <div className="text-right">
-                <div className="text-xs text-muted-foreground font-devanagari">
-                  {isHi ? "AI क्रेडिट" : "AI Credits"}
-                </div>
-                <div className="text-sm font-bold text-foreground font-devanagari">
-                  {credits === null ? "…" : creditsDisplay}
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                className="font-devanagari gap-1.5"
+                onClick={() => setShowHistory(!showHistory)}
+              >
+                <History className="w-4 h-4" />
+                <span className="hidden sm:inline">{isHi ? "इतिहास" : "History"}</span>
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="font-devanagari gap-1.5"
+                onClick={startNewConversation}
+              >
+                <Plus className="w-4 h-4" />
+                <span className="hidden sm:inline">{isHi ? "नया" : "New"}</span>
+              </Button>
+              <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-border bg-card">
+                <Sparkles className="w-4 h-4 text-secondary" />
+                <div className="text-right">
+                  <div className="text-xs text-muted-foreground font-devanagari">
+                    {isHi ? "AI क्रेडिट" : "AI Credits"}
+                  </div>
+                  <div className="text-sm font-bold text-foreground font-devanagari">
+                    {credits === null ? "…" : creditsDisplay}
+                  </div>
                 </div>
               </div>
             </div>
@@ -401,6 +516,47 @@ const AstrologerPage = () => {
               : "⚠️ AI Astrologer responses are indicative and for knowledge/entertainment. Consult a certified Jyotishacharya for important decisions."}
           </p>
         </div>
+
+        {/* Past conversations panel */}
+        {showHistory && user && (
+          <div className="mb-3 rounded-xl border border-border bg-card p-4 animate-fade-in">
+            <h3 className="text-sm font-devanagari-serif font-bold text-foreground mb-3 flex items-center gap-2">
+              <History className="w-4 h-4 text-primary" />
+              {isHi ? "पिछली बातचीत" : "Past Conversations"}
+            </h3>
+            {pastConversations.length === 0 ? (
+              <p className="text-xs text-muted-foreground font-devanagari">
+                {isHi ? "कोई पिछली बातचीत नहीं" : "No past conversations"}
+              </p>
+            ) : (
+              <div className="space-y-2 max-h-48 overflow-y-auto">
+                {pastConversations.map((conv) => (
+                  <button
+                    key={conv.id}
+                    onClick={() => loadConversation(conv.id)}
+                    className={`w-full text-left px-3 py-2 rounded-lg border text-sm font-devanagari transition-colors ${
+                      conversationId === conv.id
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/30 hover:bg-muted/50"
+                    }`}
+                  >
+                    <div className="text-foreground/90 truncate">{conv.preview}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">{conv.date}</div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {loadingHistory && (
+          <div className="mb-3 flex items-center justify-center gap-2 py-4">
+            <Loader2 className="w-5 h-5 animate-spin text-primary" />
+            <span className="text-sm text-muted-foreground font-devanagari">
+              {isHi ? "बातचीत लोड हो रही है..." : "Loading conversation..."}
+            </span>
+          </div>
+        )}
 
         {/* Messages */}
         <div
