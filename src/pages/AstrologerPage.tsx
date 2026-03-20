@@ -104,8 +104,21 @@ const AstrologerPage = () => {
   const [showDobForm, setShowDobForm] = useState(false);
   const [showUpsell, setShowUpsell] = useState(false);
   const [birthDetails, setBirthDetails] = useState({ date: "", time: "", place: "" });
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+  const [pastConversations, setPastConversations] = useState<{ id: string; preview: string; date: string }[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+
+  const welcomeMessage: Message = {
+    id: "welcome",
+    role: "assistant",
+    content: isHi
+      ? "🙏 नमस्ते! मैं दिव्य ज्योति का AI ज्योतिषी हूं। मैं आपके ज्योतिष, धर्म और अध्यात्म संबंधी प्रश्नों का उत्तर देने के लिए तत्पर हूं।\n\nआप मुझसे पूछ सकते हैं:\n• राशिफल और ग्रह-नक्षत्र के बारे में\n• कुंडली और जन्मपत्री विश्लेषण\n• शुभ मुहूर्त और व्रत-त्यौहार\n• वास्तु और उपाय"
+      : "🙏 Namaste! I am Divya Jyoti's AI Astrologer. I am ready to answer your questions on astrology, religion and spirituality.\n\nYou can ask me about:\n• Horoscope and planetary positions\n• Kundali and birth chart analysis\n• Auspicious timings and festivals\n• Vastu and remedies",
+    timestamp: new Date(),
+  };
 
   // Fetch credits on mount
   useEffect(() => {
@@ -120,18 +133,73 @@ const AstrologerPage = () => {
       });
   }, [user]);
 
-  // Set welcome message (language-aware)
+  // Load past conversations list
   useEffect(() => {
-    setMessages([
-      {
-        id: "welcome",
-        role: "assistant",
-        content: isHi
-          ? "🙏 नमस्ते! मैं दिव्य ज्योति का AI ज्योतिषी हूं। मैं आपके ज्योतिष, धर्म और अध्यात्म संबंधी प्रश्नों का उत्तर देने के लिए तत्पर हूं।\n\nआप मुझसे पूछ सकते हैं:\n• राशिफल और ग्रह-नक्षत्र के बारे में\n• कुंडली और जन्मपत्री विश्लेषण\n• शुभ मुहूर्त और व्रत-त्यौहार\n• वास्तु और उपाय"
-          : "🙏 Namaste! I am Divya Jyoti's AI Astrologer. I am ready to answer your questions on astrology, religion and spirituality.\n\nYou can ask me about:\n• Horoscope and planetary positions\n• Kundali and birth chart analysis\n• Auspicious timings and festivals\n• Vastu and remedies",
-        timestamp: new Date(),
-      },
-    ]);
+    if (!user) return;
+    const loadConversations = async () => {
+      // Get distinct conversation_ids with their first user message as preview
+      const { data } = await supabase
+        .from("chat_messages")
+        .select("conversation_id, content, role, created_at")
+        .eq("user_id", user.id)
+        .eq("role", "user")
+        .order("created_at", { ascending: false });
+
+      if (data && data.length > 0) {
+        // Group by conversation_id, take first user message as preview
+        const seen = new Map<string, { preview: string; date: string }>();
+        for (const row of data) {
+          if (!seen.has(row.conversation_id)) {
+            seen.set(row.conversation_id, {
+              preview: row.content.slice(0, 60) + (row.content.length > 60 ? "…" : ""),
+              date: new Date(row.created_at).toLocaleDateString(isHi ? "hi-IN" : "en-IN"),
+            });
+          }
+        }
+        setPastConversations(
+          Array.from(seen.entries()).map(([id, v]) => ({ id, ...v }))
+        );
+      }
+    };
+    loadConversations();
+  }, [user, isHi]);
+
+  // Load a specific conversation
+  const loadConversation = async (convId: string) => {
+    setLoadingHistory(true);
+    setConversationId(convId);
+    setShowHistory(false);
+    const { data } = await supabase
+      .from("chat_messages")
+      .select("id, role, content, created_at")
+      .eq("user_id", user!.id)
+      .eq("conversation_id", convId)
+      .order("created_at", { ascending: true });
+
+    if (data && data.length > 0) {
+      setMessages([
+        welcomeMessage,
+        ...data.map((row) => ({
+          id: row.id,
+          role: row.role as "user" | "assistant",
+          content: row.content,
+          timestamp: new Date(row.created_at),
+        })),
+      ]);
+    }
+    setLoadingHistory(false);
+  };
+
+  // Start a new conversation
+  const startNewConversation = () => {
+    setConversationId(null);
+    setMessages([welcomeMessage]);
+    setShowHistory(false);
+  };
+
+  // Set welcome message on mount
+  useEffect(() => {
+    setMessages([welcomeMessage]);
   }, [isHi]);
 
   useEffect(() => {
