@@ -517,6 +517,47 @@ const AstrologerPage = () => {
           </p>
         </div>
 
+        {/* Past conversations panel */}
+        {showHistory && user && (
+          <div className="mb-3 rounded-xl border border-border bg-card p-4 animate-fade-in">
+            <h3 className="text-sm font-devanagari-serif font-bold text-foreground mb-3 flex items-center gap-2">
+              <History className="w-4 h-4 text-primary" />
+              {isHi ? "पिछली बातचीत" : "Past Conversations"}
+            </h3>
+            {pastConversations.length === 0 ? (
+              <p className="text-xs text-muted-foreground font-devanagari">
+                {isHi ? "कोई पिछली बातचीत नहीं" : "No past conversations"}
+              </p>
+            ) : (
+              <div className="space-y-2 max-h-48 overflow-y-auto">
+                {pastConversations.map((conv) => (
+                  <button
+                    key={conv.id}
+                    onClick={() => loadConversation(conv.id)}
+                    className={`w-full text-left px-3 py-2 rounded-lg border text-sm font-devanagari transition-colors ${
+                      conversationId === conv.id
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/30 hover:bg-muted/50"
+                    }`}
+                  >
+                    <div className="text-foreground/90 truncate">{conv.preview}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">{conv.date}</div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {loadingHistory && (
+          <div className="mb-3 flex items-center justify-center gap-2 py-4">
+            <Loader2 className="w-5 h-5 animate-spin text-primary" />
+            <span className="text-sm text-muted-foreground font-devanagari">
+              {isHi ? "बातचीत लोड हो रही है..." : "Loading conversation..."}
+            </span>
+          </div>
+        )}
+
         {/* Messages */}
         <div
           className="rounded-2xl border border-border bg-card overflow-hidden shadow-card mb-3"
