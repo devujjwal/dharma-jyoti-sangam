@@ -2,3 +2,6 @@ project_id = "cyopqcgizkjcjjgykukb"
 
 [functions.ai-astrologer]
 verify_jwt = false
+
+[functions.daily-horoscope]
+verify_jwt = false
