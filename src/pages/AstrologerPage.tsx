@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Lock, Info, ChevronDown, User, Sparkles, LogIn } from "lucide-react";
+import { Send, Lock, Info, ChevronDown, User, Sparkles, LogIn, History, Plus, Loader2 } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
 import { useLanguage } from "@/contexts/LanguageContext";
