@@ -128,6 +128,7 @@ const Index = () => {
       <main className="flex-1">
         <HeroSection />
         <QuickStats />
+        <DailyHoroscope />
         <TodaySection />
         <HoroscopeGrid />
         <AIDivider />
