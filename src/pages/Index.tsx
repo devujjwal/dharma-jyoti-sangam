@@ -1,4 +1,5 @@
 import HeroSection from "@/components/HeroSection";
+import DailyHoroscope from "@/components/DailyHoroscope";
 import PanchangCard from "@/components/PanchangCard";
 import HoroscopeGrid from "@/components/HoroscopeGrid";
 import AIDivider from "@/components/AIDivider";
@@ -127,6 +128,7 @@ const Index = () => {
       <main className="flex-1">
         <HeroSection />
         <QuickStats />
+        <DailyHoroscope />
         <TodaySection />
         <HoroscopeGrid />
         <AIDivider />
