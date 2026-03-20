@@ -422,16 +422,36 @@ const AstrologerPage = () => {
             </div>
           </div>
 
-          {/* Credits tracker */}
+          {/* History + Credits */}
           {user ? (
-            <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-border bg-card">
-              <Sparkles className="w-4 h-4 text-secondary" />
-              <div className="text-right">
-                <div className="text-xs text-muted-foreground font-devanagari">
-                  {isHi ? "AI क्रेडिट" : "AI Credits"}
-                </div>
-                <div className="text-sm font-bold text-foreground font-devanagari">
-                  {credits === null ? "…" : creditsDisplay}
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                className="font-devanagari gap-1.5"
+                onClick={() => setShowHistory(!showHistory)}
+              >
+                <History className="w-4 h-4" />
+                <span className="hidden sm:inline">{isHi ? "इतिहास" : "History"}</span>
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="font-devanagari gap-1.5"
+                onClick={startNewConversation}
+              >
+                <Plus className="w-4 h-4" />
+                <span className="hidden sm:inline">{isHi ? "नया" : "New"}</span>
+              </Button>
+              <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-border bg-card">
+                <Sparkles className="w-4 h-4 text-secondary" />
+                <div className="text-right">
+                  <div className="text-xs text-muted-foreground font-devanagari">
+                    {isHi ? "AI क्रेडिट" : "AI Credits"}
+                  </div>
+                  <div className="text-sm font-bold text-foreground font-devanagari">
+                    {credits === null ? "…" : creditsDisplay}
+                  </div>
                 </div>
               </div>
             </div>
