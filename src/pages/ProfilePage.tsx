@@ -140,6 +140,7 @@ const ProfilePage = () => {
       await refreshProfile();
       setPurchaseSuccess(isHi ? `${qty} क्रेडिट जोड़े गए ✓` : `${qty} credits added ✓`);
       setTimeout(() => setPurchaseSuccess(null), 3000);
+      fetchTransactions();
     }
     setBuyingPack(null);
   };
@@ -492,6 +493,50 @@ const ProfilePage = () => {
                 <div className="flex items-center justify-center gap-2 text-sm font-devanagari text-primary animate-fade-in">
                   <CheckCircle className="w-4 h-4" />
                   {purchaseSuccess}
+                </div>
+              )}
+
+              {/* Transaction History */}
+              <h3 className="font-devanagari-serif font-bold text-foreground">
+                {isHi ? "लेन-देन इतिहास" : "Transaction History"}
+              </h3>
+              {loadingTx ? (
+                <div className="flex justify-center py-6">
+                  <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                </div>
+              ) : transactions.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground font-devanagari text-sm">
+                  {isHi ? "अभी तक कोई लेन-देन नहीं।" : "No transactions yet."}
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {transactions.map(tx => (
+                    <div key={tx.id} className="rounded-xl border border-border bg-card p-3 shadow-card flex items-center gap-3">
+                      <div className={`w-9 h-9 rounded-full flex items-center justify-center text-base shrink-0 ${
+                        tx.type === "purchase" ? "bg-primary/10" : "bg-accent/10"
+                      }`}>
+                        {tx.type === "purchase" ? "💰" : "🔮"}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-devanagari font-medium text-foreground truncate">
+                          {tx.description || (tx.type === "purchase"
+                            ? (isHi ? "क्रेडिट खरीदे" : "Credits purchased")
+                            : (isHi ? "AI प्रश्न पूछा" : "AI question asked"))}
+                        </p>
+                        <p className="text-xs text-muted-foreground font-devanagari">
+                          {new Date(tx.created_at).toLocaleDateString(isHi ? "hi-IN" : "en-IN", {
+                            day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
+                          })}
+                          {tx.pack_name ? ` · ${tx.pack_name}` : ""}
+                        </p>
+                      </div>
+                      <span className={`text-sm font-bold font-devanagari shrink-0 ${
+                        tx.amount > 0 ? "text-primary" : "text-destructive"
+                      }`}>
+                        {tx.amount > 0 ? `+${tx.amount}` : tx.amount}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
