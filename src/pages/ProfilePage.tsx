@@ -454,8 +454,12 @@ const ProfilePage = () => {
                     <p className="text-sm font-devanagari font-semibold text-primary mb-1">{isHi ? pack.hiLabel : pack.enLabel}</p>
                     <p className="text-xl font-bold text-foreground mb-3">{pack.price}</p>
                     <Button size="sm" className="w-full font-devanagari text-xs"
-                      style={{ background: "var(--gradient-saffron)" }}>
-                      {isHi ? "खरीदें" : "Buy Now"}
+                      style={{ background: "var(--gradient-saffron)" }}
+                      disabled={buyingPack !== null}
+                      onClick={() => buyCredits(pack.q, isHi ? pack.hiLabel : pack.enLabel, pack.price)}>
+                      {buyingPack === pack.q ? (
+                        <><Loader2 className="w-3 h-3 animate-spin mr-1" />{isHi ? "प्रोसेसिंग..." : "Processing..."}</>
+                      ) : (isHi ? "खरीदें" : "Buy Now")}
                     </Button>
                   </div>
                 ))}
