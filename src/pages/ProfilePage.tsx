@@ -95,6 +95,31 @@ const ProfilePage = () => {
   };
 
 
+  const buyCredits = async (qty: number, packName: string, price: string) => {
+    if (!user) return;
+    setBuyingPack(qty);
+    // Simulate payment delay
+    await new Promise(r => setTimeout(r, 1500));
+    const currentCredits = profile?.ai_credits ?? 0;
+    const { error } = await supabase
+      .from("profiles")
+      .update({ ai_credits: currentCredits + qty })
+      .eq("id", user.id);
+    if (!error) {
+      await supabase.from("credit_transactions").insert({
+        user_id: user.id,
+        amount: qty,
+        type: "purchase",
+        pack_name: packName,
+        description: `Purchased ${packName} pack (${price})`,
+      });
+      await refreshProfile();
+      setPurchaseSuccess(isHi ? `${qty} क्रेडिट जोड़े गए ✓` : `${qty} credits added ✓`);
+      setTimeout(() => setPurchaseSuccess(null), 3000);
+    }
+    setBuyingPack(null);
+  };
+
   const deleteKundali = async (id: string) => {
     await supabase.from("saved_kundalis").delete().eq("id", id);
     fetchKundalis();
