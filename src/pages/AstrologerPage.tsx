@@ -199,6 +199,22 @@ const AstrologerPage = () => {
     setShowHistory(false);
   };
 
+  const deleteConversation = async (convId: string) => {
+    if (!user) return;
+    setDeleting(true);
+    await supabase
+      .from("chat_messages")
+      .delete()
+      .eq("user_id", user.id)
+      .eq("conversation_id", convId);
+    setPastConversations(prev => prev.filter(c => c.id !== convId));
+    if (conversationId === convId) {
+      startNewConversation();
+    }
+    setConfirmDeleteId(null);
+    setDeleting(false);
+  };
+
   // Set welcome message on mount
   useEffect(() => {
     setMessages([welcomeMessage]);
