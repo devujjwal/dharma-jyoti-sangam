@@ -67,6 +67,7 @@ const ProfilePage = () => {
     }
     fetchKundalis();
     fetchBookmarks();
+    fetchTransactions();
   }, [user, profile]);
 
   const fetchKundalis = async () => {
