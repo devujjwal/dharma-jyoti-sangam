@@ -464,6 +464,12 @@ const ProfilePage = () => {
                   </div>
                 ))}
               </div>
+              {purchaseSuccess && (
+                <div className="flex items-center justify-center gap-2 text-sm font-devanagari text-primary animate-fade-in">
+                  <CheckCircle className="w-4 h-4" />
+                  {purchaseSuccess}
+                </div>
+              )}
             </div>
           )}
         </div>
