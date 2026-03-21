@@ -106,6 +106,18 @@ const ProfilePage = () => {
     }
   };
 
+  const fetchTransactions = async () => {
+    if (!user) return;
+    setLoadingTx(true);
+    const { data } = await supabase
+      .from("credit_transactions")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(50);
+    setTransactions((data as CreditTransaction[]) ?? []);
+    setLoadingTx(false);
+  };
 
   const buyCredits = async (qty: number, packName: string, price: string) => {
     if (!user) return;
