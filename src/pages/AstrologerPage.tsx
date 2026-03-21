@@ -108,6 +108,8 @@ const AstrologerPage = () => {
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [pastConversations, setPastConversations] = useState<{ id: string; preview: string; date: string }[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
 
