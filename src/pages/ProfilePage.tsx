@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
 import { RASHIS, BHAJANS } from "@/data/astroData";
-import { LogOut, Bookmark, BookOpen, Star, Zap, User, Save, ExternalLink, PlusCircle } from "lucide-react";
+import { LogOut, Bookmark, BookOpen, Star, Zap, User, Save, ExternalLink, PlusCircle, Loader2, CheckCircle } from "lucide-react";
 
 interface SavedKundali {
   id: string;
@@ -43,6 +43,8 @@ const ProfilePage = () => {
   const [pob, setPob] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
+  const [buyingPack, setBuyingPack] = useState<number | null>(null);
+  const [purchaseSuccess, setPurchaseSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) { navigate("/login"); return; }
@@ -92,6 +94,31 @@ const ProfilePage = () => {
     }
   };
 
+
+  const buyCredits = async (qty: number, packName: string, price: string) => {
+    if (!user) return;
+    setBuyingPack(qty);
+    // Simulate payment delay
+    await new Promise(r => setTimeout(r, 1500));
+    const currentCredits = profile?.ai_credits ?? 0;
+    const { error } = await supabase
+      .from("profiles")
+      .update({ ai_credits: currentCredits + qty })
+      .eq("id", user.id);
+    if (!error) {
+      await supabase.from("credit_transactions").insert({
+        user_id: user.id,
+        amount: qty,
+        type: "purchase",
+        pack_name: packName,
+        description: `Purchased ${packName} pack (${price})`,
+      });
+      await refreshProfile();
+      setPurchaseSuccess(isHi ? `${qty} क्रेडिट जोड़े गए ✓` : `${qty} credits added ✓`);
+      setTimeout(() => setPurchaseSuccess(null), 3000);
+    }
+    setBuyingPack(null);
+  };
 
   const deleteKundali = async (id: string) => {
     await supabase.from("saved_kundalis").delete().eq("id", id);
@@ -427,12 +454,22 @@ const ProfilePage = () => {
                     <p className="text-sm font-devanagari font-semibold text-primary mb-1">{isHi ? pack.hiLabel : pack.enLabel}</p>
                     <p className="text-xl font-bold text-foreground mb-3">{pack.price}</p>
                     <Button size="sm" className="w-full font-devanagari text-xs"
-                      style={{ background: "var(--gradient-saffron)" }}>
-                      {isHi ? "खरीदें" : "Buy Now"}
+                      style={{ background: "var(--gradient-saffron)" }}
+                      disabled={buyingPack !== null}
+                      onClick={() => buyCredits(pack.q, isHi ? pack.hiLabel : pack.enLabel, pack.price)}>
+                      {buyingPack === pack.q ? (
+                        <><Loader2 className="w-3 h-3 animate-spin mr-1" />{isHi ? "प्रोसेसिंग..." : "Processing..."}</>
+                      ) : (isHi ? "खरीदें" : "Buy Now")}
                     </Button>
                   </div>
                 ))}
               </div>
+              {purchaseSuccess && (
+                <div className="flex items-center justify-center gap-2 text-sm font-devanagari text-primary animate-fade-in">
+                  <CheckCircle className="w-4 h-4" />
+                  {purchaseSuccess}
+                </div>
+              )}
             </div>
           )}
         </div>
