@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
 import { RASHIS, BHAJANS } from "@/data/astroData";
-import { LogOut, Bookmark, BookOpen, Star, Zap, User, Save, ExternalLink, PlusCircle } from "lucide-react";
+import { LogOut, Bookmark, BookOpen, Star, Zap, User, Save, ExternalLink, PlusCircle, Loader2, CheckCircle } from "lucide-react";
 
 interface SavedKundali {
   id: string;
