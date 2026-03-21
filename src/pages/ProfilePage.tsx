@@ -27,6 +27,15 @@ interface BookmarkedBhajan {
   created_at: string;
 }
 
+interface CreditTransaction {
+  id: string;
+  amount: number;
+  type: string;
+  pack_name: string | null;
+  description: string | null;
+  created_at: string;
+}
+
 const ProfilePage = () => {
   const { user, profile, signOut, refreshProfile } = useAuth();
   const { language } = useLanguage();
