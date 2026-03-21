@@ -43,6 +43,8 @@ const ProfilePage = () => {
   const [pob, setPob] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
+  const [buyingPack, setBuyingPack] = useState<number | null>(null);
+  const [purchaseSuccess, setPurchaseSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) { navigate("/login"); return; }
