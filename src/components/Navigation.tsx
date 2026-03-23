@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, Search, User, Bell, ChevronDown, LogOut, UserCircle, Zap } from "lucide-react";
+import { Menu, X, Search, User, Bell, ChevronDown, LogOut, UserCircle, Zap, Sun, Moon } from "lucide-react";
+import { useTheme } from "next-themes";
 import { useLanguage, LANGUAGES } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ import {
 const Navigation = () => {
   const { language, setLanguage, t } = useLanguage();
   const { user, profile, signOut } = useAuth();
+  const { theme, setTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -149,6 +151,16 @@ const Navigation = () => {
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="p-2 rounded-md text-muted-foreground hover:text-primary hover:bg-muted transition-colors"
+                aria-label="Toggle dark mode"
+              >
+                <Sun className="w-4 h-4 hidden dark:block" />
+                <Moon className="w-4 h-4 block dark:hidden" />
+              </button>
 
               {/* Notifications */}
               <button className="relative p-2 rounded-md text-muted-foreground hover:text-primary hover:bg-muted transition-colors hidden sm:flex">
