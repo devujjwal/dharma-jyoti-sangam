@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Search, User, Bell, ChevronDown, LogOut, UserCircle, Zap, Sun, Moon, Monitor } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -22,6 +22,22 @@ const Navigation = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Sync theme from profile on login
+  useEffect(() => {
+    if (profile?.theme) {
+      setTheme(profile.theme);
+    }
+  }, [profile?.theme]);
+
+  // Persist theme to profile
+  const handleSetTheme = useCallback(async (newTheme: string) => {
+    setTheme(newTheme);
+    if (user) {
+      const { supabase } = await import("@/integrations/supabase/client");
+      await supabase.from("profiles").update({ theme: newTheme } as any).eq("id", user.id);
+    }
+  }, [user, setTheme]);
 
   const currentLang = LANGUAGES.find((l) => l.code === language);
 
@@ -164,13 +180,13 @@ const Navigation = () => {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-36">
-                  <DropdownMenuItem onClick={() => setTheme("light")} className={`flex items-center gap-2 ${theme === "light" ? "text-primary font-semibold" : ""}`}>
+                  <DropdownMenuItem onClick={() => handleSetTheme("light")} className={`flex items-center gap-2 ${theme === "light" ? "text-primary font-semibold" : ""}`}>
                     <Sun className="w-4 h-4" /> Light
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setTheme("dark")} className={`flex items-center gap-2 ${theme === "dark" ? "text-primary font-semibold" : ""}`}>
+                  <DropdownMenuItem onClick={() => handleSetTheme("dark")} className={`flex items-center gap-2 ${theme === "dark" ? "text-primary font-semibold" : ""}`}>
                     <Moon className="w-4 h-4" /> Dark
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setTheme("system")} className={`flex items-center gap-2 ${theme === "system" ? "text-primary font-semibold" : ""}`}>
+                  <DropdownMenuItem onClick={() => handleSetTheme("system")} className={`flex items-center gap-2 ${theme === "system" ? "text-primary font-semibold" : ""}`}>
                     <Monitor className="w-4 h-4" /> System
                   </DropdownMenuItem>
                 </DropdownMenuContent>
