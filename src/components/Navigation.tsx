@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Search, User, Bell, ChevronDown, LogOut, UserCircle, Zap } from "lucide-react";
 import { useLanguage, LANGUAGES } from "@/contexts/LanguageContext";
@@ -17,6 +17,7 @@ const Navigation = () => {
   const { user, profile, signOut } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -228,6 +229,30 @@ const Navigation = () => {
                 <input
                   autoFocus
                   type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && searchQuery.trim()) {
+                      const q = searchQuery.trim().toLowerCase();
+                      const searchRoutes = [
+                        { keywords: ["panchang", "पंचांग", "tithi", "तिथि", "nakshatra", "नक्षत्र"], href: "/panchang" },
+                        { keywords: ["horoscope", "rashifal", "राशिफल", "rashi", "राशि"], href: "/horoscope" },
+                        { keywords: ["kundali", "कुंडली", "birth chart", "janam"], href: "/kundali" },
+                        { keywords: ["matching", "मिलान", "compatibility", "gun milan"], href: "/kundali-matching" },
+                        { keywords: ["festival", "त्यौहार", "tyohar", "diwali", "holi", "navratri"], href: "/festivals" },
+                        { keywords: ["temple", "मंदिर", "mandir", "tirth"], href: "/temples" },
+                        { keywords: ["bhajan", "भजन", "chalisa", "चालीसा", "aarti", "आरती"], href: "/bhajans" },
+                        { keywords: ["article", "लेख", "vastu", "वास्तु", "gemstone", "रत्न"], href: "/articles" },
+                        { keywords: ["vrat", "व्रत", "fast", "upvas", "उपवास"], href: "/vrat" },
+                        { keywords: ["ai", "astrologer", "ज्योतिषी", "question", "प्रश्न"], href: "/ai-astrologer" },
+                        { keywords: ["subscribe", "सदस्यता", "premium", "प्रीमियम"], href: "/subscribe" },
+                      ];
+                      const match = searchRoutes.find(r => r.keywords.some(k => q.includes(k)));
+                      navigate(match?.href ?? "/horoscope");
+                      setSearchQuery("");
+                      setSearchOpen(false);
+                    }
+                  }}
                   placeholder={t("search_placeholder")}
                   className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-border bg-muted/50 text-sm font-devanagari focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition"
                 />
