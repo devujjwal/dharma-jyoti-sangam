@@ -12,6 +12,7 @@ interface Profile {
   ai_credits: number;
   language: string;
   avatar_url: string | null;
+  theme: string;
 }
 
 interface AuthContextType {
