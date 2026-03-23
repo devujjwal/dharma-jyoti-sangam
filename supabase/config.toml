@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.daily-horoscope]
 verify_jwt = false
+
+[functions.panchang]
+verify_jwt = false
