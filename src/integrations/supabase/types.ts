@@ -130,6 +130,7 @@ export type Database = {
           language: string
           pob: string | null
           rashi_id: string | null
+          theme: string
           tob: string | null
           updated_at: string
         }
@@ -143,6 +144,7 @@ export type Database = {
           language?: string
           pob?: string | null
           rashi_id?: string | null
+          theme?: string
           tob?: string | null
           updated_at?: string
         }
@@ -156,6 +158,7 @@ export type Database = {
           language?: string
           pob?: string | null
           rashi_id?: string | null
+          theme?: string
           tob?: string | null
           updated_at?: string
         }
