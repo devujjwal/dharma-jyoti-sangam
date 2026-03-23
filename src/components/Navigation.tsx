@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, Search, User, Bell, ChevronDown, LogOut, UserCircle, Zap, Sun, Moon } from "lucide-react";
+import { Menu, X, Search, User, Bell, ChevronDown, LogOut, UserCircle, Zap, Sun, Moon, Monitor } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useLanguage, LANGUAGES } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -152,15 +152,29 @@ const Navigation = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* Dark Mode Toggle */}
-              <button
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="p-2 rounded-md text-muted-foreground hover:text-primary hover:bg-muted transition-colors"
-                aria-label="Toggle dark mode"
-              >
-                <Sun className="w-4 h-4 hidden dark:block" />
-                <Moon className="w-4 h-4 block dark:hidden" />
-              </button>
+              {/* Theme Toggle: light → dark → system */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    className="p-2 rounded-md text-muted-foreground hover:text-primary hover:bg-muted transition-colors"
+                    aria-label="Toggle theme"
+                  >
+                    <Sun className="w-4 h-4 hidden dark:block" />
+                    <Moon className="w-4 h-4 block dark:hidden" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-36">
+                  <DropdownMenuItem onClick={() => setTheme("light")} className={`flex items-center gap-2 ${theme === "light" ? "text-primary font-semibold" : ""}`}>
+                    <Sun className="w-4 h-4" /> Light
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setTheme("dark")} className={`flex items-center gap-2 ${theme === "dark" ? "text-primary font-semibold" : ""}`}>
+                    <Moon className="w-4 h-4" /> Dark
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setTheme("system")} className={`flex items-center gap-2 ${theme === "system" ? "text-primary font-semibold" : ""}`}>
+                    <Monitor className="w-4 h-4" /> System
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
               {/* Notifications */}
               <button className="relative p-2 rounded-md text-muted-foreground hover:text-primary hover:bg-muted transition-colors hidden sm:flex">
