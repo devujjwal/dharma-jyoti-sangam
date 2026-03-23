@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index.tsx";
@@ -33,43 +34,45 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <LanguageProvider>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/panchang" element={<PanchangPage />} />
-              <Route path="/horoscope" element={<HoroscopePage />} />
-              <Route path="/horoscope/:rashiId" element={<HoroscopePage />} />
-              <Route path="/ai-astrologer" element={<AstrologerPage />} />
-              <Route path="/kundali" element={<KundaliPage />} />
-              <Route path="/kundali-matching" element={<KundaliMatchingPage />} />
-              <Route path="/festivals" element={<FestivalsPage />} />
-              <Route path="/festivals/:festivalId" element={<FestivalDetailPage />} />
-              <Route path="/temples" element={<TemplesPage />} />
-              <Route path="/bhajans" element={<BhajansPage />} />
-              <Route path="/articles" element={<ArticlesPage />} />
-              <Route path="/vrat" element={<VratPage />} />
-              <Route path="/subscribe" element={<SubscribePage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/privacy" element={<PrivacyPage />} />
-              <Route path="/terms" element={<TermsPage />} />
-              <Route path="/ads-policy" element={<AdsPolicyPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/support" element={<SupportPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
-    </LanguageProvider>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+      <LanguageProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/panchang" element={<PanchangPage />} />
+                <Route path="/horoscope" element={<HoroscopePage />} />
+                <Route path="/horoscope/:rashiId" element={<HoroscopePage />} />
+                <Route path="/ai-astrologer" element={<AstrologerPage />} />
+                <Route path="/kundali" element={<KundaliPage />} />
+                <Route path="/kundali-matching" element={<KundaliMatchingPage />} />
+                <Route path="/festivals" element={<FestivalsPage />} />
+                <Route path="/festivals/:festivalId" element={<FestivalDetailPage />} />
+                <Route path="/temples" element={<TemplesPage />} />
+                <Route path="/bhajans" element={<BhajansPage />} />
+                <Route path="/articles" element={<ArticlesPage />} />
+                <Route path="/vrat" element={<VratPage />} />
+                <Route path="/subscribe" element={<SubscribePage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/privacy" element={<PrivacyPage />} />
+                <Route path="/terms" element={<TermsPage />} />
+                <Route path="/ads-policy" element={<AdsPolicyPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/support" element={<SupportPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </AuthProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
