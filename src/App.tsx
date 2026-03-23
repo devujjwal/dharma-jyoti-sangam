@@ -12,9 +12,21 @@ import AstrologerPage from "./pages/AstrologerPage.tsx";
 import KundaliPage from "./pages/KundaliPage.tsx";
 import KundaliMatchingPage from "./pages/KundaliMatchingPage.tsx";
 import FestivalsPage from "./pages/FestivalsPage.tsx";
+import FestivalDetailPage from "./pages/FestivalDetailPage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
+import TemplesPage from "./pages/TemplesPage.tsx";
+import BhajansPage from "./pages/BhajansPage.tsx";
+import ArticlesPage from "./pages/ArticlesPage.tsx";
+import VratPage from "./pages/VratPage.tsx";
+import SubscribePage from "./pages/SubscribePage.tsx";
+import AboutPage from "./pages/AboutPage.tsx";
+import PrivacyPage from "./pages/PrivacyPage.tsx";
+import TermsPage from "./pages/TermsPage.tsx";
+import AdsPolicyPage from "./pages/AdsPolicyPage.tsx";
+import ContactPage from "./pages/ContactPage.tsx";
+import SupportPage from "./pages/SupportPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -36,6 +48,18 @@ const App = () => (
               <Route path="/kundali" element={<KundaliPage />} />
               <Route path="/kundali-matching" element={<KundaliMatchingPage />} />
               <Route path="/festivals" element={<FestivalsPage />} />
+              <Route path="/festivals/:festivalId" element={<FestivalDetailPage />} />
+              <Route path="/temples" element={<TemplesPage />} />
+              <Route path="/bhajans" element={<BhajansPage />} />
+              <Route path="/articles" element={<ArticlesPage />} />
+              <Route path="/vrat" element={<VratPage />} />
+              <Route path="/subscribe" element={<SubscribePage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/ads-policy" element={<AdsPolicyPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/support" element={<SupportPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/profile" element={<ProfilePage />} />
