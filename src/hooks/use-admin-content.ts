@@ -14,7 +14,7 @@ export function useAdminList(table: TableName, orderBy = "created_at") {
         .order(orderBy, { ascending: false })
         .limit(500);
       if (error) throw error;
-      return data;
+      return data as any[];
     },
     staleTime: 1000 * 60,
   });
@@ -27,7 +27,7 @@ export function useAdminItem(table: TableName, id: string | undefined) {
       if (!id) return null;
       const { data, error } = await supabase.from(table).select("*").eq("id", id).maybeSingle();
       if (error) throw error;
-      return data;
+      return data as any;
     },
     enabled: !!id,
   });
@@ -38,10 +38,10 @@ export function useAdminUpsert(table: TableName) {
   return useMutation({
     mutationFn: async ({ id, values }: { id?: string; values: Record<string, any> }) => {
       if (id) {
-        const { error } = await supabase.from(table).update(values).eq("id", id);
+        const { error } = await supabase.from(table).update(values as any).eq("id", id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from(table).insert(values);
+        const { error } = await supabase.from(table).insert(values as any);
         if (error) throw error;
       }
     },

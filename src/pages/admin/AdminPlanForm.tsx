@@ -27,8 +27,8 @@ export default function AdminPlanForm() {
   useEffect(() => {
     if (item) {
       setForm({ ...form, ...item });
-      setFeatHi((item.features_hi || []).join("\n"));
-      setFeatEn((item.features_en || []).join("\n"));
+      setFeatHi(((item as any).features_hi || []).join("\n"));
+      setFeatEn(((item as any).features_en || []).join("\n"));
     }
   }, [item]);
   const set = (k: string, v: any) => setForm((f) => ({ ...f, [k]: v }));
