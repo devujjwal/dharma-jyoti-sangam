@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
-import { RASHIS, BHAJANS } from "@/data/astroData";
+import { RASHIS } from "@/data/astroData";
+import { useBhajans } from "@/hooks/use-bhajans";
 import { LogOut, Bookmark, BookOpen, Star, Zap, User, Save, ExternalLink, PlusCircle, Loader2, CheckCircle } from "lucide-react";
 
 interface SavedKundali {
@@ -41,6 +42,7 @@ const ProfilePage = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const isHi = language === "hi";
+  const { data: allBhajans } = useBhajans();
 
   const [activeTab, setActiveTab] = useState<"overview" | "kundalis" | "bhajans" | "credits">("overview");
   const [savedKundalis, setSavedKundalis] = useState<SavedKundali[]>([]);
@@ -409,7 +411,7 @@ const ProfilePage = () => {
                 </div>
               ) : (
                 bookmarkedBhajans.map(b => {
-                  const bhajan = BHAJANS.find(bj => bj.id === b.bhajan_id);
+                  const bhajan = allBhajans?.find(bj => bj.id === b.bhajan_id || bj.slug === b.bhajan_id);
                   if (!bhajan) return null;
                   return (
                     <div key={b.id} className="rounded-xl border border-border bg-card p-4 shadow-card flex items-center gap-3">
@@ -418,10 +420,10 @@ const ProfilePage = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-devanagari font-semibold text-foreground truncate">
-                          {isHi ? bhajan.titleHi : bhajan.titleEn}
+                          {isHi ? bhajan.title_hi : bhajan.title_en}
                         </p>
                         <p className="text-xs text-muted-foreground font-devanagari">
-                          {isHi ? bhajan.deityHi : bhajan.deity} · {bhajan.duration}
+                          {isHi ? bhajan.deity_hi : bhajan.deity_en} · {bhajan.duration_display || ""}
                         </p>
                       </div>
                       <button

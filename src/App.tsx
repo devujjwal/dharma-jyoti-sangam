@@ -6,6 +6,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { lazy, Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import Index from "./pages/Index.tsx";
 import PanchangPage from "./pages/PanchangPage.tsx";
 import HoroscopePage from "./pages/HoroscopePage.tsx";
@@ -29,8 +31,31 @@ import AdsPolicyPage from "./pages/AdsPolicyPage.tsx";
 import ContactPage from "./pages/ContactPage.tsx";
 import SupportPage from "./pages/SupportPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import ArticleDetailPage from "./pages/ArticleDetailPage.tsx";
+import TempleDetailPage from "./pages/TempleDetailPage.tsx";
+
+// Admin (lazy loaded)
+const AdminLayout = lazy(() => import("./components/admin/AdminLayout"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const AdminFestivalsList = lazy(() => import("./pages/admin/AdminFestivalsList"));
+const AdminFestivalForm = lazy(() => import("./pages/admin/AdminFestivalForm"));
+const AdminArticlesList = lazy(() => import("./pages/admin/AdminArticlesList"));
+const AdminArticleForm = lazy(() => import("./pages/admin/AdminArticleForm"));
+const AdminTemplesList = lazy(() => import("./pages/admin/AdminTemplesList"));
+const AdminTempleForm = lazy(() => import("./pages/admin/AdminTempleForm"));
+const AdminBhajansList = lazy(() => import("./pages/admin/AdminBhajansList"));
+const AdminBhajanForm = lazy(() => import("./pages/admin/AdminBhajanForm"));
+const AdminVratsList = lazy(() => import("./pages/admin/AdminVratsList"));
+const AdminVratForm = lazy(() => import("./pages/admin/AdminVratForm"));
+const AdminPlansList = lazy(() => import("./pages/admin/AdminPlansList"));
+const AdminPlanForm = lazy(() => import("./pages/admin/AdminPlanForm"));
+const AdminContactsList = lazy(() => import("./pages/admin/AdminContactsList"));
+const AdminPanchangCache = lazy(() => import("./pages/admin/AdminPanchangCache"));
+const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
 
 const queryClient = new QueryClient();
+
+const Loading = () => <div className="p-8"><Skeleton className="h-96 w-full" /></div>;
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -41,33 +66,64 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/panchang" element={<PanchangPage />} />
-                <Route path="/horoscope" element={<HoroscopePage />} />
-                <Route path="/horoscope/:rashiId" element={<HoroscopePage />} />
-                <Route path="/ai-astrologer" element={<AstrologerPage />} />
-                <Route path="/kundali" element={<KundaliPage />} />
-                <Route path="/kundali-matching" element={<KundaliMatchingPage />} />
-                <Route path="/festivals" element={<FestivalsPage />} />
-                <Route path="/festivals/:festivalId" element={<FestivalDetailPage />} />
-                <Route path="/temples" element={<TemplesPage />} />
-                <Route path="/bhajans" element={<BhajansPage />} />
-                <Route path="/articles" element={<ArticlesPage />} />
-                <Route path="/vrat" element={<VratPage />} />
-                <Route path="/subscribe" element={<SubscribePage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/privacy" element={<PrivacyPage />} />
-                <Route path="/terms" element={<TermsPage />} />
-                <Route path="/ads-policy" element={<AdsPolicyPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/support" element={<SupportPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <Suspense fallback={<Loading />}>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/panchang" element={<PanchangPage />} />
+                  <Route path="/horoscope" element={<HoroscopePage />} />
+                  <Route path="/horoscope/:rashiId" element={<HoroscopePage />} />
+                  <Route path="/ai-astrologer" element={<AstrologerPage />} />
+                  <Route path="/kundali" element={<KundaliPage />} />
+                  <Route path="/kundali-matching" element={<KundaliMatchingPage />} />
+                  <Route path="/festivals" element={<FestivalsPage />} />
+                  <Route path="/festivals/:festivalId" element={<FestivalDetailPage />} />
+                  <Route path="/temples" element={<TemplesPage />} />
+                  <Route path="/temples/:slug" element={<TempleDetailPage />} />
+                  <Route path="/bhajans" element={<BhajansPage />} />
+                  <Route path="/articles" element={<ArticlesPage />} />
+                  <Route path="/articles/:slug" element={<ArticleDetailPage />} />
+                  <Route path="/vrat" element={<VratPage />} />
+                  <Route path="/subscribe" element={<SubscribePage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/privacy" element={<PrivacyPage />} />
+                  <Route path="/terms" element={<TermsPage />} />
+                  <Route path="/ads-policy" element={<AdsPolicyPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/support" element={<SupportPage />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+
+                  {/* Admin routes */}
+                  <Route path="/admin" element={<AdminLayout />}>
+                    <Route index element={<AdminDashboard />} />
+                    <Route path="festivals" element={<AdminFestivalsList />} />
+                    <Route path="festivals/new" element={<AdminFestivalForm />} />
+                    <Route path="festivals/:id" element={<AdminFestivalForm />} />
+                    <Route path="articles" element={<AdminArticlesList />} />
+                    <Route path="articles/new" element={<AdminArticleForm />} />
+                    <Route path="articles/:id" element={<AdminArticleForm />} />
+                    <Route path="temples" element={<AdminTemplesList />} />
+                    <Route path="temples/new" element={<AdminTempleForm />} />
+                    <Route path="temples/:id" element={<AdminTempleForm />} />
+                    <Route path="bhajans" element={<AdminBhajansList />} />
+                    <Route path="bhajans/new" element={<AdminBhajanForm />} />
+                    <Route path="bhajans/:id" element={<AdminBhajanForm />} />
+                    <Route path="vrats" element={<AdminVratsList />} />
+                    <Route path="vrats/new" element={<AdminVratForm />} />
+                    <Route path="vrats/:id" element={<AdminVratForm />} />
+                    <Route path="plans" element={<AdminPlansList />} />
+                    <Route path="plans/new" element={<AdminPlanForm />} />
+                    <Route path="plans/:id" element={<AdminPlanForm />} />
+                    <Route path="contacts" element={<AdminContactsList />} />
+                    <Route path="panchang" element={<AdminPanchangCache />} />
+                    <Route path="settings" element={<AdminSettings />} />
+                  </Route>
+
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
             </BrowserRouter>
           </TooltipProvider>
         </AuthProvider>
