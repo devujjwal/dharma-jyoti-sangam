@@ -25,7 +25,7 @@ export function useAdminItem(table: TableName, id: string | undefined) {
     queryKey: ["admin", table, id],
     queryFn: async () => {
       if (!id) return null;
-      const { data, error } = await supabase.from(table).select("*").eq("id", id).maybeSingle();
+      const { data, error } = await (supabase.from(table).select("*") as any).eq("id", id).maybeSingle();
       if (error) throw error;
       return data as any;
     },
