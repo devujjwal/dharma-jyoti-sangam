@@ -4,12 +4,15 @@ import { toast } from "@/hooks/use-toast";
 
 type TableName = "festivals" | "articles" | "temples" | "bhajans" | "vrats" | "subscription_plans" | "contact_submissions" | "vrat_occurrences" | "site_settings" | "panchang_cache";
 
+function getTable(table: TableName) {
+  return supabase.from(table) as any;
+}
+
 export function useAdminList(table: TableName, orderBy = "created_at") {
   return useQuery({
     queryKey: ["admin", table],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from(table)
+      const { data, error } = await getTable(table)
         .select("*")
         .order(orderBy, { ascending: false })
         .limit(500);
@@ -25,7 +28,7 @@ export function useAdminItem(table: TableName, id: string | undefined) {
     queryKey: ["admin", table, id],
     queryFn: async () => {
       if (!id) return null;
-      const { data, error } = await (supabase.from(table).select("*") as any).eq("id", id).maybeSingle();
+      const { data, error } = await getTable(table).select("*").eq("id", id).maybeSingle();
       if (error) throw error;
       return data as any;
     },
@@ -38,10 +41,10 @@ export function useAdminUpsert(table: TableName) {
   return useMutation({
     mutationFn: async ({ id, values }: { id?: string; values: Record<string, any> }) => {
       if (id) {
-        const { error } = await supabase.from(table).update(values as any).eq("id", id);
+        const { error } = await getTable(table).update(values).eq("id", id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from(table).insert(values as any);
+        const { error } = await getTable(table).insert(values);
         if (error) throw error;
       }
     },
@@ -60,7 +63,7 @@ export function useAdminDelete(table: TableName) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from(table).delete().eq("id", id);
+      const { error } = await getTable(table).delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
