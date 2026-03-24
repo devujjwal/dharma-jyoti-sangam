@@ -42,6 +42,7 @@ const ProfilePage = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const isHi = language === "hi";
+  const { data: allBhajans } = useBhajans();
 
   const [activeTab, setActiveTab] = useState<"overview" | "kundalis" | "bhajans" | "credits">("overview");
   const [savedKundalis, setSavedKundalis] = useState<SavedKundali[]>([]);
