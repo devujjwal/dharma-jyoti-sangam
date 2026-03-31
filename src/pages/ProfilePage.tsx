@@ -329,7 +329,7 @@ const ProfilePage = () => {
                     </div>
                   </div>
                   <p className="text-sm text-muted-foreground font-devanagari leading-relaxed">
-                    {isHi ? myRashi.todayHi : myRashi.todayEn}
+                    {isHi ? myRashi.description.hi : myRashi.description.en}
                   </p>
                 </div>
               )}
