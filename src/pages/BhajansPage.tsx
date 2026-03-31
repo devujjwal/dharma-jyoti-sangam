@@ -5,6 +5,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useBhajans } from "@/hooks/use-bhajans";
+import { playBhajan } from "@/components/BhajanPlayer";
 import { Play, Lock, Search, Bookmark, BookmarkCheck, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
