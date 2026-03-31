@@ -52,6 +52,8 @@ const ProfilePage = () => {
   const [rashiId, setRashiId] = useState("");
   const [dob, setDob] = useState("");
   const [pob, setPob] = useState("");
+  const [preferredCity, setPreferredCity] = useState("");
+  const [preferredDeity, setPreferredDeity] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const [buyingPack, setBuyingPack] = useState<number | null>(null);
