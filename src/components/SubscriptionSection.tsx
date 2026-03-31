@@ -1,3 +1,4 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import { Check, Zap } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -5,7 +6,7 @@ import { useSubscriptionPlans } from "@/hooks/use-subscription-plans";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
-const SubscriptionSection = () => {
+const SubscriptionSection = React.forwardRef<HTMLElement>((_, ref) => {
   const { language, t } = useLanguage();
   const { data: plans, isLoading } = useSubscriptionPlans();
 
