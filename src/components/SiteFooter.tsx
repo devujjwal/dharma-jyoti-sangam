@@ -121,6 +121,8 @@ const SiteFooter = React.forwardRef<HTMLElement>((_, ref) => {
       </div>
     </footer>
   );
-};
+});
+
+SiteFooter.displayName = "SiteFooter";
 
 export default SiteFooter;
