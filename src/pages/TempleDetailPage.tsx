@@ -51,6 +51,7 @@ const TempleDetailPage = () => {
             {(temple.deity_hi || temple.deity_en) && <div className="rounded-xl border border-border bg-card p-4 shadow-card"><p className="text-xs text-muted-foreground font-devanagari mb-1">{isHi ? "मुख्य देवता" : "Main Deity"}</p><p className="font-devanagari font-semibold text-foreground">{isHi ? temple.deity_hi : temple.deity_en}</p></div>}
             {(temple.timings_hi || temple.timings_en) && <div className="rounded-xl border border-border bg-card p-4 shadow-card"><p className="text-xs text-muted-foreground font-devanagari mb-1">{isHi ? "समय" : "Timings"}</p><p className="font-devanagari font-semibold text-foreground">{isHi ? temple.timings_hi : temple.timings_en}</p></div>}
           </div>
+          <RelatedContent sourceType="temple" sourceId={temple.id} />
           <div className="flex flex-wrap gap-3">
             {mapsUrl && <Button asChild variant="outline" className="font-devanagari gap-2"><a href={mapsUrl} target="_blank" rel="noopener noreferrer"><MapPin className="w-4 h-4" />{isHi ? "मार्ग देखें" : "Get Directions"}</a></Button>}
             {temple.website_url && <Button asChild variant="outline" className="font-devanagari gap-2"><a href={temple.website_url} target="_blank" rel="noopener noreferrer"><ExternalLink className="w-4 h-4" />{isHi ? "वेबसाइट" : "Website"}</a></Button>}

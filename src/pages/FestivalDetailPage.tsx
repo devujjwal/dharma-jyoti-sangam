@@ -69,6 +69,7 @@ const FestivalDetailPage = () => {
               <p className="text-muted-foreground font-devanagari leading-relaxed">{sanitizeText(isHi ? festival.significance_hi : festival.significance_en)}</p>
             </section>
           )}
+          <RelatedContent sourceType="festival" sourceId={festival.id} />
           <div className="flex flex-wrap gap-3">
             <Button onClick={() => downloadICS(festival)} variant="outline" className="font-devanagari gap-2"><CalendarPlus className="w-4 h-4" />{isHi ? "कैलेंडर में जोड़ें" : "Add to Calendar"}</Button>
             <Button asChild variant="outline" className="font-devanagari"><Link to="/festivals">{isHi ? "सभी त्यौहार देखें" : "View All Festivals"}</Link></Button>

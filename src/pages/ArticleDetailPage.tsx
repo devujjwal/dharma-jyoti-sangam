@@ -54,6 +54,7 @@ const ArticleDetailPage = () => {
               {content.split("\n").map((p, i) => p.trim() ? <p key={i}>{p}</p> : null)}
             </div>
           )}
+          <RelatedContent sourceType="article" sourceId={article.id} />
         </div>
       </main>
       <SiteFooter />
