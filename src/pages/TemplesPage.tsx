@@ -1,26 +1,66 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTemples } from "@/hooks/use-temples";
-import { MapPin, Search, ExternalLink, Loader2 } from "lucide-react";
+import { MapPin, Search, Loader2, Navigation as NavIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
+
+function haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
 
 const TemplesPage = () => {
   const { language } = useLanguage();
   const isHi = language === "hi";
   const [search, setSearch] = useState("");
   const [filterState, setFilterState] = useState("all");
+  const [filterType, setFilterType] = useState("all");
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [loadingLocation, setLoadingLocation] = useState(false);
   const { data: temples, isLoading } = useTemples();
 
   const states = ["all", ...Array.from(new Set((temples || []).map(t => t.state).filter(Boolean) as string[]))];
+  const types = ["all", ...Array.from(new Set((temples || []).map(t => t.type).filter(Boolean) as string[]))];
 
-  const filtered = (temples || []).filter(t => {
+  const handleNearMe = useCallback(() => {
+    setLoadingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setLoadingLocation(false);
+        toast({ title: isHi ? "स्थान मिला" : "Location found" });
+      },
+      () => {
+        setLoadingLocation(false);
+        toast({ title: isHi ? "स्थान नहीं मिला" : "Location not available", variant: "destructive" });
+      },
+      { timeout: 10000 }
+    );
+  }, [isHi]);
+
+  let filtered = (temples || []).filter(t => {
     const matchSearch = !search || t.name_hi.includes(search) || t.name_en.toLowerCase().includes(search.toLowerCase());
     const matchState = filterState === "all" || t.state === filterState;
-    return matchSearch && matchState;
+    const matchType = filterType === "all" || t.type === filterType;
+    return matchSearch && matchState && matchType;
   });
+
+  // Sort by distance if user location is available
+  if (userLocation) {
+    filtered = [...filtered].sort((a, b) => {
+      const distA = a.latitude && a.longitude ? haversine(userLocation.lat, userLocation.lng, Number(a.latitude), Number(a.longitude)) : Infinity;
+      const distB = b.latitude && b.longitude ? haversine(userLocation.lat, userLocation.lng, Number(b.latitude), Number(b.longitude)) : Infinity;
+      return distA - distB;
+    });
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
