@@ -7,6 +7,7 @@ import { useSeo } from "@/hooks/use-seo";
 import { sanitizeText } from "@/lib/sanitize";
 import { ArrowLeft, MapPin, Clock, ExternalLink, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import RelatedContent from "@/components/RelatedContent";
 
 const TempleDetailPage = () => {
   const { slug } = useParams();
