@@ -52,6 +52,8 @@ const ProfilePage = () => {
   const [rashiId, setRashiId] = useState("");
   const [dob, setDob] = useState("");
   const [pob, setPob] = useState("");
+  const [preferredCity, setPreferredCity] = useState("");
+  const [preferredDeity, setPreferredDeity] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const [buyingPack, setBuyingPack] = useState<number | null>(null);
@@ -66,6 +68,8 @@ const ProfilePage = () => {
       setRashiId(profile.rashi_id ?? "");
       setDob(profile.dob ?? "");
       setPob(profile.pob ?? "");
+      setPreferredCity((profile as any).preferred_city ?? "");
+      setPreferredDeity((profile as any).preferred_deity ?? "");
     }
     fetchKundalis();
     fetchBookmarks();
@@ -97,7 +101,14 @@ const ProfilePage = () => {
     setSaving(true);
     const { error } = await supabase
       .from("profiles")
-      .update({ display_name: displayName, rashi_id: rashiId || null, dob: dob || null, pob: pob || null })
+      .update({
+        display_name: displayName,
+        rashi_id: rashiId || null,
+        dob: dob || null,
+        pob: pob || null,
+        preferred_city: preferredCity || null,
+        preferred_deity: preferredDeity || null,
+      } as any)
       .eq("id", user.id);
     setSaving(false);
     if (!error) {
@@ -276,6 +287,16 @@ const ProfilePage = () => {
                         <Input value={pob} onChange={e => setPob(e.target.value)} placeholder={isHi ? "शहर का नाम" : "City name"} className="mt-1 font-devanagari" />
                       </div>
                     </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="font-devanagari text-sm">{isHi ? "पसंदीदा शहर" : "Preferred City"}</Label>
+                        <Input value={preferredCity} onChange={e => setPreferredCity(e.target.value)} placeholder={isHi ? "पंचांग के लिए शहर" : "City for Panchang"} className="mt-1 font-devanagari" />
+                      </div>
+                      <div>
+                        <Label className="font-devanagari text-sm">{isHi ? "पसंदीदा देवता" : "Preferred Deity"}</Label>
+                        <Input value={preferredDeity} onChange={e => setPreferredDeity(e.target.value)} placeholder={isHi ? "शिव, विष्णु, दुर्गा..." : "Shiva, Vishnu, Durga..."} className="mt-1 font-devanagari" />
+                      </div>
+                    </div>
                     <Button
                       onClick={saveProfile}
                       disabled={saving}
@@ -293,6 +314,8 @@ const ProfilePage = () => {
                       { label: isHi ? "राशि" : "Rashi", value: myRashi ? `${myRashi.symbol} ${isHi ? myRashi.nameHi : myRashi.nameEn}` : "—" },
                       { label: isHi ? "जन्म तिथि" : "Date of Birth", value: profile?.dob || "—" },
                       { label: isHi ? "जन्म स्थान" : "Place of Birth", value: profile?.pob || "—" },
+                      { label: isHi ? "पसंदीदा शहर" : "Preferred City", value: (profile as any)?.preferred_city || "—" },
+                      { label: isHi ? "पसंदीदा देवता" : "Preferred Deity", value: (profile as any)?.preferred_deity || "—" },
                     ].map((item, i) => (
                       <div key={i} className="rounded-xl bg-muted/50 p-3">
                         <p className="text-xs text-muted-foreground font-devanagari mb-0.5">{item.label}</p>

@@ -608,7 +608,10 @@ export type Database = {
           id: string
           language: string
           pob: string | null
+          preferred_city: string | null
+          preferred_deity: string | null
           rashi_id: string | null
+          reminder_preferences: Json
           theme: string
           tob: string | null
           updated_at: string
@@ -622,7 +625,10 @@ export type Database = {
           id: string
           language?: string
           pob?: string | null
+          preferred_city?: string | null
+          preferred_deity?: string | null
           rashi_id?: string | null
+          reminder_preferences?: Json
           theme?: string
           tob?: string | null
           updated_at?: string
@@ -636,7 +642,10 @@ export type Database = {
           id?: string
           language?: string
           pob?: string | null
+          preferred_city?: string | null
+          preferred_deity?: string | null
           rashi_id?: string | null
+          reminder_preferences?: Json
           theme?: string
           tob?: string | null
           updated_at?: string
