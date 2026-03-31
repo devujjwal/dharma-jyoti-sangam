@@ -74,21 +74,35 @@ const TemplesPage = () => {
           </div>
         </div>
         <div className="container mx-auto px-4 py-8 max-w-5xl">
-          <div className="flex flex-col sm:flex-row gap-3 mb-6">
+          <div className="flex flex-col sm:flex-row gap-3 mb-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input value={search} onChange={e => setSearch(e.target.value)} placeholder={isHi ? "मंदिर खोजें..." : "Search temples..."} className="pl-10 font-devanagari" />
             </div>
-            <div className="flex flex-wrap gap-1.5">
-              {states.map(s => (
-                <button key={s} onClick={() => setFilterState(s)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-devanagari font-medium transition-colors border ${filterState === s ? "border-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/50"}`}
-                  style={filterState === s ? { background: "var(--gradient-saffron)" } : {}}>
-                  {s === "all" ? (isHi ? "सभी" : "All") : s}
+            <Button variant="outline" onClick={handleNearMe} disabled={loadingLocation} className="font-devanagari gap-1.5 shrink-0">
+              {loadingLocation ? <Loader2 className="w-4 h-4 animate-spin" /> : <NavIcon className="w-4 h-4" />}
+              {isHi ? "मेरे पास" : "Near Me"}
+            </Button>
+          </div>
+          <div className="flex flex-wrap gap-1.5 mb-2">
+            {states.map(s => (
+              <button key={s} onClick={() => setFilterState(s)}
+                className={`px-3 py-1.5 rounded-full text-xs font-devanagari font-medium transition-colors border ${filterState === s ? "border-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/50"}`}
+                style={filterState === s ? { background: "var(--gradient-saffron)" } : {}}>
+                {s === "all" ? (isHi ? "सभी राज्य" : "All States") : s}
+              </button>
+            ))}
+          </div>
+          {types.length > 2 && (
+            <div className="flex flex-wrap gap-1.5 mb-6">
+              {types.map(t => (
+                <button key={t} onClick={() => setFilterType(t)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-devanagari font-medium transition-colors border ${filterType === t ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/50"}`}>
+                  {t === "all" ? (isHi ? "सभी प्रकार" : "All Types") : t}
                 </button>
               ))}
             </div>
-          </div>
+          )}
           {isLoading ? <div className="text-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" /></div> : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filtered.map(temple => (
