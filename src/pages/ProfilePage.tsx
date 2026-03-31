@@ -296,13 +296,6 @@ const ProfilePage = () => {
                         <Label className="font-devanagari text-sm">{isHi ? "पसंदीदा देवता" : "Preferred Deity"}</Label>
                         <Input value={preferredDeity} onChange={e => setPreferredDeity(e.target.value)} placeholder={isHi ? "शिव, विष्णु, दुर्गा..." : "Shiva, Vishnu, Durga..."} className="mt-1 font-devanagari" />
                       </div>
-                        <Label className="font-devanagari text-sm">{isHi ? "जन्म तिथि" : "Date of Birth"}</Label>
-                        <Input type="date" value={dob} onChange={e => setDob(e.target.value)} className="mt-1 font-devanagari" />
-                      </div>
-                      <div>
-                        <Label className="font-devanagari text-sm">{isHi ? "जन्म स्थान" : "Place of Birth"}</Label>
-                        <Input value={pob} onChange={e => setPob(e.target.value)} placeholder={isHi ? "शहर का नाम" : "City name"} className="mt-1 font-devanagari" />
-                      </div>
                     </div>
                     <Button
                       onClick={saveProfile}
