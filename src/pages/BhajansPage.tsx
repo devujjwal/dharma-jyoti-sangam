@@ -76,7 +76,7 @@ const BhajansPage = () => {
                     <div className="h-1.5 w-full" style={{ background: color }} />
                     <div className="p-4">
                       <div className="flex items-start gap-3">
-                        <button onClick={() => bhajan.audio_url ? setPlaying(isPlaying ? null : bhajan.id) : null} className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center shadow-sacred transition-all group-hover:scale-105" style={{ background: bhajan.is_free ? `linear-gradient(135deg, ${color}, ${color}cc)` : "hsl(var(--muted))" }}>
+                        <button onClick={() => { if (bhajan.audio_url || !bhajan.is_free) { playBhajan(bhajan, filtered); } }} className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center shadow-sacred transition-all group-hover:scale-105" style={{ background: bhajan.is_free ? `linear-gradient(135deg, ${color}, ${color}cc)` : "hsl(var(--muted))" }}>
                           {bhajan.is_free ? <Play className={`w-4 h-4 text-white ${isPlaying ? "fill-white" : ""}`} /> : <Lock className="w-4 h-4 text-muted-foreground" />}
                         </button>
                         <div className="flex-1 min-w-0">
