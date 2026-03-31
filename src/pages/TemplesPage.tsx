@@ -113,7 +113,15 @@ const TemplesPage = () => {
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0" style={{ background: "hsl(var(--primary) / 0.1)" }}>{temple.emoji || "🛕"}</div>
                       <div className="min-w-0">
                         <h3 className="font-devanagari-serif font-bold text-foreground text-base leading-tight">{isHi ? temple.name_hi : temple.name_en}</h3>
-                        <div className="flex items-center gap-1 mt-0.5"><MapPin className="w-3 h-3 text-muted-foreground" /><span className="text-xs text-muted-foreground font-devanagari">{temple.city}{temple.state ? `, ${temple.state}` : ""}</span></div>
+                        <div className="flex items-center gap-1 mt-0.5">
+                          <MapPin className="w-3 h-3 text-muted-foreground" />
+                          <span className="text-xs text-muted-foreground font-devanagari">{temple.city}{temple.state ? `, ${temple.state}` : ""}</span>
+                          {userLocation && temple.latitude && temple.longitude && (
+                            <span className="text-xs text-primary font-devanagari ml-1">
+                              · {Math.round(haversine(userLocation.lat, userLocation.lng, Number(temple.latitude), Number(temple.longitude)))} km
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 mb-2">
