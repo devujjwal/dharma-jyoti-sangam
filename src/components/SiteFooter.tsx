@@ -49,7 +49,7 @@ const SiteFooter = React.forwardRef<HTMLElement>((_, ref) => {
   };
 
   return (
-    <footer className="border-t border-border">
+    <footer ref={ref} className="border-t border-border">
       {/* Main footer */}
       <div className="bg-foreground/5">
         <div className="container mx-auto px-4 py-12">
