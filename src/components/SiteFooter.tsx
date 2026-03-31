@@ -1,7 +1,8 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-const SiteFooter = () => {
+const SiteFooter = React.forwardRef<HTMLElement>((_, ref) => {
   const { language, t } = useLanguage();
 
   const footerLinks = {
@@ -48,7 +49,7 @@ const SiteFooter = () => {
   };
 
   return (
-    <footer className="border-t border-border">
+    <footer ref={ref} className="border-t border-border">
       {/* Main footer */}
       <div className="bg-foreground/5">
         <div className="container mx-auto px-4 py-12">
@@ -120,6 +121,8 @@ const SiteFooter = () => {
       </div>
     </footer>
   );
-};
+});
+
+SiteFooter.displayName = "SiteFooter";
 
 export default SiteFooter;

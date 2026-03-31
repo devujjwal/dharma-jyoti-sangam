@@ -1,3 +1,4 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import { Check, Zap } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -5,14 +6,14 @@ import { useSubscriptionPlans } from "@/hooks/use-subscription-plans";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
-const SubscriptionSection = () => {
+const SubscriptionSection = React.forwardRef<HTMLElement>((_, ref) => {
   const { language, t } = useLanguage();
   const { data: plans, isLoading } = useSubscriptionPlans();
 
   if (isLoading || !plans?.length) return null;
 
   return (
-    <section className="py-16 relative overflow-hidden">
+    <section ref={ref} className="py-16 relative overflow-hidden">
       <div className="absolute inset-0"
         style={{ background: "linear-gradient(135deg, hsl(20 40% 10%), hsl(345 70% 22%), hsl(20 50% 15%))" }} />
       <div className="absolute inset-0 bg-pattern-sacred opacity-20" />
@@ -115,6 +116,8 @@ const SubscriptionSection = () => {
       </div>
     </section>
   );
-};
+});
+
+SubscriptionSection.displayName = "SubscriptionSection";
 
 export default SubscriptionSection;
