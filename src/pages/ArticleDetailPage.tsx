@@ -1,12 +1,14 @@
 import { useParams, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import ShareButton from "@/components/ShareButton";
+import RelatedContent from "@/components/RelatedContent";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useArticle } from "@/hooks/use-articles";
 import { useSeo } from "@/hooks/use-seo";
 import { sanitizeHtml } from "@/lib/sanitize";
-import { ArrowLeft, Clock, Loader2 } from "lucide-react";
-import RelatedContent from "@/components/RelatedContent";
+import { Clock, Loader2 } from "lucide-react";
 
 const ArticleDetailPage = () => {
   const { slug } = useParams();
@@ -27,6 +29,7 @@ const ArticleDetailPage = () => {
 
   const content = isHi ? article.content_hi : article.content_en;
   const hasHtml = /<[a-z][\s\S]*>/i.test(content);
+  const articleTitle = isHi ? article.title_hi : article.title_en;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -34,16 +37,28 @@ const ArticleDetailPage = () => {
       <main className="flex-1">
         <div className="py-12 border-b border-border" style={{ background: `linear-gradient(135deg, ${article.color || "hsl(24 95% 48%)"}20, ${article.color || "hsl(24 95% 48%)"}05)` }}>
           <div className="container mx-auto px-4 max-w-3xl">
-            <Link to="/articles" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary font-devanagari mb-4 transition-colors"><ArrowLeft className="w-4 h-4" />{isHi ? "सभी लेख" : "All Articles"}</Link>
-            <h1 className="text-3xl font-devanagari-serif font-bold text-foreground mb-2">{isHi ? article.title_hi : article.title_en}</h1>
-            <div className="flex items-center gap-3 text-sm text-muted-foreground font-devanagari">
+            <Breadcrumbs crumbs={[
+              { label: isHi ? "लेख" : "Articles", href: "/articles" },
+              ...(article.category ? [{ label: article.category, href: "/articles" }] : []),
+              { label: articleTitle },
+            ]} />
+            <h1 className="text-3xl font-devanagari-serif font-bold text-foreground mb-2">{articleTitle}</h1>
+            <div className="flex items-center gap-3 text-sm text-muted-foreground font-devanagari flex-wrap">
               {article.author_name && <span>{article.author_name}</span>}
               {article.read_time && <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{article.read_time}</span>}
               {article.category && <span className="px-2 py-0.5 rounded-full bg-muted text-xs">{article.category}</span>}
+              {article.tags && article.tags.length > 0 && (
+                <div className="flex gap-1 flex-wrap">
+                  {article.tags.slice(0, 3).map((tag) => (
+                    <span key={tag} className="px-2 py-0.5 rounded-full bg-muted/60 text-xs">#{tag}</span>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
-        <div className="container mx-auto px-4 py-8 max-w-3xl">
+        <div className="container mx-auto px-4 py-8 max-w-3xl space-y-8">
+          {/* Content */}
           {hasHtml ? (
             <div
               className="prose prose-neutral dark:prose-invert max-w-none font-devanagari"
@@ -54,6 +69,13 @@ const ArticleDetailPage = () => {
               {content.split("\n").map((p, i) => p.trim() ? <p key={i}>{p}</p> : null)}
             </div>
           )}
+
+          {/* Share */}
+          <div className="flex gap-3 border-t border-border pt-6">
+            <ShareButton title={articleTitle} />
+          </div>
+
+          {/* Related */}
           <RelatedContent sourceType="article" sourceId={article.id} />
         </div>
       </main>
