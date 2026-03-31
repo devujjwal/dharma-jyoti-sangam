@@ -314,6 +314,8 @@ const ProfilePage = () => {
                       { label: isHi ? "राशि" : "Rashi", value: myRashi ? `${myRashi.symbol} ${isHi ? myRashi.nameHi : myRashi.nameEn}` : "—" },
                       { label: isHi ? "जन्म तिथि" : "Date of Birth", value: profile?.dob || "—" },
                       { label: isHi ? "जन्म स्थान" : "Place of Birth", value: profile?.pob || "—" },
+                      { label: isHi ? "पसंदीदा शहर" : "Preferred City", value: (profile as any)?.preferred_city || "—" },
+                      { label: isHi ? "पसंदीदा देवता" : "Preferred Deity", value: (profile as any)?.preferred_deity || "—" },
                     ].map((item, i) => (
                       <div key={i} className="rounded-xl bg-muted/50 p-3">
                         <p className="text-xs text-muted-foreground font-devanagari mb-0.5">{item.label}</p>
