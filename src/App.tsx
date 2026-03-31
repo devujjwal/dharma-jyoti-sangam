@@ -24,6 +24,7 @@ import TemplesPage from "./pages/TemplesPage.tsx";
 import BhajansPage from "./pages/BhajansPage.tsx";
 import ArticlesPage from "./pages/ArticlesPage.tsx";
 import VratPage from "./pages/VratPage.tsx";
+import VratDetailPage from "./pages/VratDetailPage.tsx";
 import SubscribePage from "./pages/SubscribePage.tsx";
 import AboutPage from "./pages/AboutPage.tsx";
 import PrivacyPage from "./pages/PrivacyPage.tsx";
