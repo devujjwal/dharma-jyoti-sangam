@@ -116,6 +116,8 @@ const SubscriptionSection = React.forwardRef<HTMLElement>((_, ref) => {
       </div>
     </section>
   );
-};
+});
+
+SubscriptionSection.displayName = "SubscriptionSection";
 
 export default SubscriptionSection;

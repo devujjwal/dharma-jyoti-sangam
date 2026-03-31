@@ -1,7 +1,8 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-const SiteFooter = () => {
+const SiteFooter = React.forwardRef<HTMLElement>((_, ref) => {
   const { language, t } = useLanguage();
 
   const footerLinks = {
