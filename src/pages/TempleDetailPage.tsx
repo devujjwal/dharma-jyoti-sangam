@@ -3,6 +3,8 @@ import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTemple } from "@/hooks/use-temples";
+import { useSeo } from "@/hooks/use-seo";
+import { sanitizeText } from "@/lib/sanitize";
 import { ArrowLeft, MapPin, Clock, ExternalLink, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -12,10 +14,16 @@ const TempleDetailPage = () => {
   const isHi = language === "hi";
   const { data: temple, isLoading } = useTemple(slug);
 
+  useSeo({
+    title: temple ? (isHi ? temple.name_hi : temple.name_en) : undefined,
+    description: temple?.seo_description || (temple ? sanitizeText(isHi ? temple.short_description_hi : temple.short_description_en) || undefined : undefined),
+  });
+
   if (isLoading) return (<div className="min-h-screen flex flex-col bg-background"><Navigation /><main className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></main><SiteFooter /></div>);
   if (!temple) return (<div className="min-h-screen flex flex-col bg-background"><Navigation /><main className="flex-1 flex items-center justify-center"><div className="text-center"><p className="text-4xl mb-4">🛕</p><h1 className="text-2xl font-devanagari-serif font-bold text-foreground mb-2">{isHi ? "मंदिर नहीं मिला" : "Temple Not Found"}</h1><Link to="/temples" className="text-primary font-devanagari hover:underline">{isHi ? "सभी मंदिर देखें" : "View all temples"}</Link></div></main><SiteFooter /></div>);
 
   const mapsUrl = temple.latitude && temple.longitude ? `https://www.google.com/maps?q=${temple.latitude},${temple.longitude}` : null;
+  const description = sanitizeText(isHi ? temple.description_hi : temple.description_en);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -36,7 +44,7 @@ const TempleDetailPage = () => {
         <div className="container mx-auto px-4 py-8 max-w-3xl space-y-6">
           <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
             <h2 className="text-lg font-devanagari-serif font-bold text-foreground mb-3">{isHi ? "परिचय" : "About"}</h2>
-            <p className="text-muted-foreground font-devanagari leading-relaxed">{isHi ? temple.description_hi : temple.description_en}</p>
+            <p className="text-muted-foreground font-devanagari leading-relaxed">{description}</p>
           </section>
           <div className="grid grid-cols-2 gap-4">
             {(temple.deity_hi || temple.deity_en) && <div className="rounded-xl border border-border bg-card p-4 shadow-card"><p className="text-xs text-muted-foreground font-devanagari mb-1">{isHi ? "मुख्य देवता" : "Main Deity"}</p><p className="font-devanagari font-semibold text-foreground">{isHi ? temple.deity_hi : temple.deity_en}</p></div>}

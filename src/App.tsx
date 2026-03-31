@@ -8,6 +8,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { lazy, Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import Index from "./pages/Index.tsx";
 import PanchangPage from "./pages/PanchangPage.tsx";
 import HoroscopePage from "./pages/HoroscopePage.tsx";

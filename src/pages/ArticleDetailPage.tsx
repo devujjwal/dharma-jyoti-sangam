@@ -3,6 +3,8 @@ import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useArticle } from "@/hooks/use-articles";
+import { useSeo } from "@/hooks/use-seo";
+import { sanitizeHtml } from "@/lib/sanitize";
 import { ArrowLeft, Clock, Loader2 } from "lucide-react";
 
 const ArticleDetailPage = () => {
@@ -11,6 +13,11 @@ const ArticleDetailPage = () => {
   const isHi = language === "hi";
   const { data: article, isLoading } = useArticle(slug);
 
+  useSeo({
+    title: article ? (isHi ? article.title_hi : article.title_en) : undefined,
+    description: article?.seo_description || (article ? (isHi ? article.excerpt_hi : article.excerpt_en) || undefined : undefined),
+  });
+
   if (isLoading) return (<div className="min-h-screen flex flex-col bg-background"><Navigation /><main className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></main><SiteFooter /></div>);
 
   if (!article) return (
@@ -18,6 +25,7 @@ const ArticleDetailPage = () => {
   );
 
   const content = isHi ? article.content_hi : article.content_en;
+  const hasHtml = /<[a-z][\s\S]*>/i.test(content);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -35,9 +43,16 @@ const ArticleDetailPage = () => {
           </div>
         </div>
         <div className="container mx-auto px-4 py-8 max-w-3xl">
-          <div className="prose prose-neutral dark:prose-invert max-w-none font-devanagari">
-            {content.split("\n").map((p, i) => p.trim() ? <p key={i}>{p}</p> : null)}
-          </div>
+          {hasHtml ? (
+            <div
+              className="prose prose-neutral dark:prose-invert max-w-none font-devanagari"
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
+            />
+          ) : (
+            <div className="prose prose-neutral dark:prose-invert max-w-none font-devanagari">
+              {content.split("\n").map((p, i) => p.trim() ? <p key={i}>{p}</p> : null)}
+            </div>
+          )}
         </div>
       </main>
       <SiteFooter />
