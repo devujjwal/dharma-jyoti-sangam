@@ -101,7 +101,14 @@ const ProfilePage = () => {
     setSaving(true);
     const { error } = await supabase
       .from("profiles")
-      .update({ display_name: displayName, rashi_id: rashiId || null, dob: dob || null, pob: pob || null })
+      .update({
+        display_name: displayName,
+        rashi_id: rashiId || null,
+        dob: dob || null,
+        pob: pob || null,
+        preferred_city: preferredCity || null,
+        preferred_deity: preferredDeity || null,
+      } as any)
       .eq("id", user.id);
     setSaving(false);
     if (!error) {
