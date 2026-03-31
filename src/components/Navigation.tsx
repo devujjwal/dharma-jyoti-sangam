@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import { useLanguage, LANGUAGES } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import GlobalSearch from "@/components/GlobalSearch";
 import {
   DropdownMenu,
   DropdownMenuContent,
