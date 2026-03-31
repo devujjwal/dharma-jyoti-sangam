@@ -7,6 +7,7 @@ import { useSeo } from "@/hooks/use-seo";
 import { sanitizeText } from "@/lib/sanitize";
 import { Calendar, ArrowLeft, CalendarPlus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import RelatedContent from "@/components/RelatedContent";
 
 function downloadICS(festival: any) {
   const [y, m, d] = festival.festival_date.split("-").map(Number);
