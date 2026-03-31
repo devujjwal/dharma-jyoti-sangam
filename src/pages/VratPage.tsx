@@ -45,7 +45,7 @@ const VratPage = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}
