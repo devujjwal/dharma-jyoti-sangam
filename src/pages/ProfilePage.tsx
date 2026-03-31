@@ -68,6 +68,8 @@ const ProfilePage = () => {
       setRashiId(profile.rashi_id ?? "");
       setDob(profile.dob ?? "");
       setPob(profile.pob ?? "");
+      setPreferredCity((profile as any).preferred_city ?? "");
+      setPreferredDeity((profile as any).preferred_deity ?? "");
     }
     fetchKundalis();
     fetchBookmarks();
