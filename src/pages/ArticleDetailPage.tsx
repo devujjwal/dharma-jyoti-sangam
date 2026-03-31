@@ -6,6 +6,7 @@ import { useArticle } from "@/hooks/use-articles";
 import { useSeo } from "@/hooks/use-seo";
 import { sanitizeHtml } from "@/lib/sanitize";
 import { ArrowLeft, Clock, Loader2 } from "lucide-react";
+import RelatedContent from "@/components/RelatedContent";
 
 const ArticleDetailPage = () => {
   const { slug } = useParams();
@@ -53,6 +54,7 @@ const ArticleDetailPage = () => {
               {content.split("\n").map((p, i) => p.trim() ? <p key={i}>{p}</p> : null)}
             </div>
           )}
+          <RelatedContent sourceType="article" sourceId={article.id} />
         </div>
       </main>
       <SiteFooter />

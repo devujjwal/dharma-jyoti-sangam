@@ -272,6 +272,39 @@ export type Database = {
         }
         Relationships: []
       }
+      content_relations: {
+        Row: {
+          created_at: string
+          id: string
+          relation_type: string
+          sort_order: number
+          source_id: string
+          source_type: string
+          target_id: string
+          target_type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          relation_type?: string
+          sort_order?: number
+          source_id: string
+          source_type: string
+          target_id: string
+          target_type: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          relation_type?: string
+          sort_order?: number
+          source_id?: string
+          source_type?: string
+          target_id?: string
+          target_type?: string
+        }
+        Relationships: []
+      }
       credit_transactions: {
         Row: {
           amount: number
@@ -440,12 +473,16 @@ export type Database = {
           paksha_hi: string | null
           panchang_date: string
           rahu_kaal: string | null
+          samvat_year: string | null
+          shubh_muhurat: string | null
+          source_confidence: string
           source_provider: string
           sunrise: string | null
           sunset: string | null
           timezone: string | null
           tithi_en: string | null
           tithi_hi: string | null
+          vrat_of_day: string | null
           yoga_en: string | null
           yoga_hi: string | null
         }
@@ -469,12 +506,16 @@ export type Database = {
           paksha_hi?: string | null
           panchang_date: string
           rahu_kaal?: string | null
+          samvat_year?: string | null
+          shubh_muhurat?: string | null
+          source_confidence?: string
           source_provider?: string
           sunrise?: string | null
           sunset?: string | null
           timezone?: string | null
           tithi_en?: string | null
           tithi_hi?: string | null
+          vrat_of_day?: string | null
           yoga_en?: string | null
           yoga_hi?: string | null
         }
@@ -498,12 +539,16 @@ export type Database = {
           paksha_hi?: string | null
           panchang_date?: string
           rahu_kaal?: string | null
+          samvat_year?: string | null
+          shubh_muhurat?: string | null
+          source_confidence?: string
           source_provider?: string
           sunrise?: string | null
           sunset?: string | null
           timezone?: string | null
           tithi_en?: string | null
           tithi_hi?: string | null
+          vrat_of_day?: string | null
           yoga_en?: string | null
           yoga_hi?: string | null
         }

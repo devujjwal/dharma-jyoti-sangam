@@ -24,6 +24,7 @@ import TemplesPage from "./pages/TemplesPage.tsx";
 import BhajansPage from "./pages/BhajansPage.tsx";
 import ArticlesPage from "./pages/ArticlesPage.tsx";
 import VratPage from "./pages/VratPage.tsx";
+import VratDetailPage from "./pages/VratDetailPage.tsx";
 import SubscribePage from "./pages/SubscribePage.tsx";
 import AboutPage from "./pages/AboutPage.tsx";
 import PrivacyPage from "./pages/PrivacyPage.tsx";
@@ -85,6 +86,7 @@ const App = () => (
                   <Route path="/articles" element={<ArticlesPage />} />
                   <Route path="/articles/:slug" element={<ArticleDetailPage />} />
                   <Route path="/vrat" element={<VratPage />} />
+                  <Route path="/vrat/:slug" element={<VratDetailPage />} />
                   <Route path="/subscribe" element={<SubscribePage />} />
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/privacy" element={<PrivacyPage />} />
