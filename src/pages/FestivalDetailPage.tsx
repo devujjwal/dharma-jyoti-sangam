@@ -3,6 +3,8 @@ import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useFestival } from "@/hooks/use-festivals";
+import { useSeo } from "@/hooks/use-seo";
+import { sanitizeText } from "@/lib/sanitize";
 import { Calendar, ArrowLeft, CalendarPlus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -12,7 +14,7 @@ function downloadICS(festival: any) {
   const dateStr = `${y}${pad(m)}${pad(d)}`;
   const nextDate = new Date(y, m - 1, d + 1);
   const endStr = `${nextDate.getFullYear()}${pad(nextDate.getMonth() + 1)}${pad(nextDate.getDate())}`;
-  const ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Divya Jyoti//EN","BEGIN:VEVENT",`UID:${festival.slug}@divyajyoti`,`DTSTART;VALUE=DATE:${dateStr}`,`DTEND;VALUE=DATE:${endStr}`,`SUMMARY:${festival.emoji||""} ${festival.name_en}`,`DESCRIPTION:${festival.description_en}`,"END:VEVENT","END:VCALENDAR"].join("\r\n");
+  const ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Divya Jyoti//EN","BEGIN:VEVENT",`UID:${festival.slug}@divyajyoti`,`DTSTART;VALUE=DATE:${dateStr}`,`DTEND;VALUE=DATE:${endStr}`,`SUMMARY:${festival.emoji||""} ${festival.name_en}`,`DESCRIPTION:${sanitizeText(festival.description_en)}`,"END:VEVENT","END:VCALENDAR"].join("\r\n");
   const blob = new Blob([ics], { type: "text/calendar" });
   const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = `${festival.slug}.ics`; a.click(); URL.revokeObjectURL(url);
 }
@@ -22,6 +24,11 @@ const FestivalDetailPage = () => {
   const { language } = useLanguage();
   const isHi = language === "hi";
   const { data: festival, isLoading } = useFestival(festivalId);
+
+  useSeo({
+    title: festival ? (isHi ? festival.name_hi : festival.name_en) : undefined,
+    description: festival?.seo_description || (festival ? sanitizeText(isHi ? festival.excerpt_hi : festival.excerpt_en) || undefined : undefined),
+  });
 
   if (isLoading) return (<div className="min-h-screen flex flex-col bg-background"><Navigation /><main className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></main><SiteFooter /></div>);
 
@@ -53,12 +60,12 @@ const FestivalDetailPage = () => {
         <div className="container mx-auto px-4 py-8 max-w-3xl space-y-6">
           <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
             <h2 className="text-lg font-devanagari-serif font-bold text-foreground mb-3">{isHi ? "विवरण" : "Description"}</h2>
-            <p className="text-muted-foreground font-devanagari leading-relaxed">{isHi ? festival.description_hi : festival.description_en}</p>
+            <p className="text-muted-foreground font-devanagari leading-relaxed">{sanitizeText(isHi ? festival.description_hi : festival.description_en)}</p>
           </section>
           {(festival.significance_hi || festival.significance_en) && (
             <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
               <h2 className="text-lg font-devanagari-serif font-bold text-foreground mb-3">{isHi ? "महत्व" : "Significance"}</h2>
-              <p className="text-muted-foreground font-devanagari leading-relaxed">{isHi ? festival.significance_hi : festival.significance_en}</p>
+              <p className="text-muted-foreground font-devanagari leading-relaxed">{sanitizeText(isHi ? festival.significance_hi : festival.significance_en)}</p>
             </section>
           )}
           <div className="flex flex-wrap gap-3">
