@@ -1,23 +1,28 @@
 # Data & Business Logic
 
-## 1. Panchang Calculation
+## 1. Panchang Generation
 
-**File**: `src/data/astroData.ts` → `getTodayPanchang()`
+**Edge Function**: `supabase/functions/panchang/index.ts`
+**Hook**: `src/hooks/use-panchang.ts`
 
 ### How It Works
 
 ```
-dayOfYear = current day number (1–365)
-
-tithi     = TITHIS[dayOfYear % 15]       // 15 tithis: Pratipada → Purnima/Amavasya
-nakshatra = NAKSHATRAS[dayOfYear % 27]   // 27 nakshatras: Ashwini → Revati
-yoga      = YOGAS[dayOfYear % 27]        // 27 yogas: Vishkambha → Vaidhriti
-paksha    = dayOfYear % 30 <= 15 ? "Shukla" : "Krishna"
+User visits Panchang page (default: today, Delhi)
+  → usePanchang(date, locationKey) hook fires
+  → Queries panchang_cache table for (date, location_key)
+  → If cached and not expired: return cached data
+  → If not cached:
+      → POST to panchang edge function
+      → Edge function calls Lovable AI (Gemini 2.5 Flash)
+      → AI generates bilingual Panchang data for given date/location
+      → Result cached in panchang_cache with 24-hour expiry
+      → Returns structured data to frontend
 ```
 
-**Hardcoded values**: Sunrise (6:12 AM), Sunset (6:38 PM), Rahu Kaal (varies by weekday — static lookup).
+**Data Fields**: Tithi, Nakshatra, Yoga, Karana, Paksha, Masa (month), Sunrise, Sunset, Moonrise, Rahu Kaal, Shubh Muhurat, Samvat year, Vrat of the day.
 
-**Accuracy**: This is a **simplified demonstration** — real Panchang requires astronomical ephemeris data (Sun/Moon longitude, local coordinates, timezone). The rotation-based approach gives plausible-looking but not accurate results.
+**Cache Key**: `(panchang_date, location_key)` — composite unique in DB.
 
 ---
 
@@ -32,16 +37,9 @@ Input: Date of Birth, Time of Birth, Place of Birth
 
 1. Convert date/time to Julian Day Number (JD)
 2. Calculate centuries since J2000.0 epoch (T)
-3. Compute mean tropical longitudes for 7 planets + Rahu/Ketu:
-   - Sun:     280.46646 + 36000.76983 × T
-   - Moon:    218.3165  + 481267.8813 × T
-   - Mars:    355.4330  + 19140.2993 × T
-   - Mercury: 252.2509  + 149472.6746 × T
-   - Jupiter: 34.3515   + 3034.9057 × T
-   - Venus:   181.9798  + 58517.8149 × T
-   - Saturn:  49.5574   + 1222.1138 × T
-   - Rahu:    125.0445  - 1934.1363 × T  (retrograde)
-   - Ketu:    Rahu + 180°
+3. Compute mean tropical longitudes for 9 grahas:
+   - Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn
+   - Rahu (retrograde), Ketu = Rahu + 180°
 
 4. Apply Lahiri Ayanamsha correction:
    ayanamsha ≈ 23.85 + 0.0137 × (year - 2000)
@@ -49,7 +47,7 @@ Input: Date of Birth, Time of Birth, Place of Birth
 
 5. Calculate Ascendant (Lagna):
    - Local Sidereal Time from JD + longitude offset
-   - Ascendant = atan2(cos(LST), -(sin(obliquity) × tan(latitude) + cos(obliquity) × sin(LST)))
+   - Ascendant via trigonometric computation
 
 6. Determine house placement:
    house = ((planet_longitude - ascendant_longitude + 360) % 360) / 30
@@ -59,14 +57,12 @@ Input: Date of Birth, Time of Birth, Place of Birth
 ### Dosha Detection
 
 **Manglik Dosha**: Mars in houses 1, 2, 4, 7, 8, or 12 from Lagna.
-
-**Kaal Sarp Dosha**: All 7 planets (Sun–Saturn) fall between Rahu and Ketu in the zodiac.
+**Kaal Sarp Dosha**: All 7 planets (Sun–Saturn) fall between Rahu and Ketu.
 
 ### Limitations
 
-- Uses mean orbital elements only (no perturbation corrections)
-- Simplified ayanamsha (real Lahiri has more complex precession model)
-- Place of Birth is used for display but latitude/longitude are approximated
+- Uses mean orbital elements (no perturbation corrections)
+- Simplified Lahiri ayanamsha
 - No divisional charts (D-9 Navamsha, etc.)
 
 ---
@@ -75,40 +71,20 @@ Input: Date of Birth, Time of Birth, Place of Birth
 
 **File**: `src/lib/ashtakootCalc.ts`
 
-### Data Model
-
-Each of 27 nakshatras has attributes:
-```typescript
-{
-  name: string,
-  lord: Planet,        // Ruling planet (for Graha Maitri)
-  gana: "Dev" | "Manush" | "Rakshas",  // Temperament
-  yoni: Animal,        // Animal symbol (14 pairs)
-  nadi: "Aadi" | "Madhya" | "Antya",   // Pulse/health
-  varna: "Brahmin" | "Kshatriya" | "Vaishya" | "Shudra"
-}
-```
-
 ### 8 Koot Scoring
 
 | # | Koot | Max | Logic |
 |---|------|-----|-------|
-| 1 | **Varna** | 1 | Boy's varna ≥ Girl's varna in hierarchy → 1 point |
-| 2 | **Vashya** | 2 | Based on rashi-pair compatibility matrix |
-| 3 | **Tara** | 3 | `(boyNakshatra - girlNakshatra) % 9` → favorable if result in {1,2,4,6,8} |
-| 4 | **Yoni** | 4 | Animal pair compatibility: same=4, friendly=3, neutral=2, enemy=1, extreme enemy=0 |
-| 5 | **Graha Maitri** | 5 | Planetary friendship between nakshatra lords |
-| 6 | **Gana** | 6 | Dev-Dev=6, Dev-Manush=5, Manush-Manush=6, others less |
-| 7 | **Bhakoot** | 7 | Moon sign distance: 2/12, 6/8, 5/9 patterns reduce score |
-| 8 | **Nadi** | 8 | Same nadi=0 (inauspicious), different=8 |
+| 1 | Varna | 1 | Caste hierarchy compatibility |
+| 2 | Vashya | 2 | Rashi-pair compatibility matrix |
+| 3 | Tara | 3 | Birth star modular arithmetic |
+| 4 | Yoni | 4 | Animal pair compatibility |
+| 5 | Graha Maitri | 5 | Planetary friendship between nakshatra lords |
+| 6 | Gana | 6 | Temperament (Dev/Manush/Rakshas) |
+| 7 | Bhakoot | 7 | Moon sign distance patterns |
+| 8 | Nadi | 8 | Same nadi = 0, different = 8 |
 
-**Total**: Sum of all 8 scores, maximum 36.
-
-**Interpretation**:
-- < 18: Not recommended
-- 18–24: Average, proceed with caution
-- 24–32: Good match
-- 32–36: Excellent match
+**Total**: Maximum 36. ≥18 considered acceptable.
 
 ---
 
@@ -129,9 +105,17 @@ User asks AI question:
   5. On AI failure → refunds credit back to original value
 ```
 
-### Credit Packs (Dummy)
+### Credit Packs
 
-Defined in `SUBSCRIPTION_PLANS` in `astroData.ts`. Currently no payment integration — the subscribe page is a placeholder UI.
+Defined in `subscription_plans` database table. Plans have `purchase_enabled` flag — currently `false` for all plans. When Razorpay integration is added:
+1. Set `purchase_enabled = true` on desired plans
+2. Add `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET` secrets
+3. Create `razorpay-webhook` edge function
+4. Frontend checkout flow is already structured for this
+
+### Credit Transaction History
+
+Visible on the Profile page → Credits tab. Queries `credit_transactions` table showing purchases and AI usage with timestamps.
 
 ---
 
@@ -140,20 +124,19 @@ Defined in `SUBSCRIPTION_PLANS` in `astroData.ts`. Currently no payment integrat
 ### Flow
 
 ```
-User selects rashi in DailyHoroscope component
-  → POST to daily-horoscope edge function
-    → Query daily_horoscopes WHERE rashi_id = X AND horoscope_date = today
-    → If cached: return immediately
-    → If not cached:
-        → Prompt Gemini 2.5 Flash for Hindi + English horoscope
-        → Parse JSON response { content_hi, content_en }
-        → Upsert to daily_horoscopes table
-        → Return to frontend
+User selects rashi (on homepage widget or horoscope detail page)
+  → useDailyHoroscope(rashiId) hook queries daily_horoscopes table
+  → If cached for today: return immediately
+  → If not cached:
+      → POST to daily-horoscope edge function
+      → Prompts Gemini 2.5 Flash for Hindi + English horoscope
+      → Parses JSON response { content_hi, content_en }
+      → Upserts to daily_horoscopes table
+      → Returns to frontend
 ```
 
-**Cache Key**: `(rashi_id, horoscope_date)` — unique constraint in DB.
-**Cache Duration**: 1 day (new content generated when date changes).
-**Fallback**: If AI returns non-JSON, raw text is used for both languages.
+**Cache Key**: `(rashi_id, horoscope_date)` — unique constraint.
+**Cache Duration**: 1 day (new content on date change).
 
 ---
 
@@ -167,40 +150,56 @@ User selects rashi in DailyHoroscope component
 |------|----------|--------|
 | `hi` | Hindi | ✅ Full (default) |
 | `en` | English | ✅ Full |
-| `ta` | Tamil | 🔲 Stub |
-| `te` | Telugu | 🔲 Stub |
-| `bn` | Bengali | 🔲 Stub |
-| `mr` | Marathi | 🔲 Stub |
 
 ### Usage Patterns
 
-**Translation function**:
+**Translation function** (for UI labels):
 ```tsx
 const { t, language } = useLanguage();
 <h1>{t("dailyPanchang")}</h1>
 ```
 
-**Inline conditional** (common in content-heavy pages):
+**Bilingual DB content** (for dynamic data):
 ```tsx
-{language === "hi" ? "आज का राशिफल" : "Today's Horoscope"}
+{language === "hi" ? festival.name_hi : festival.name_en}
 ```
 
-### Translation Keys
-
-The `translations` object in `LanguageContext.tsx` maps keys like `home`, `panchang`, `horoscope`, `festivals`, etc. to their translations. Navigation labels, section titles, and UI chrome use `t()`. Long-form content typically uses the inline conditional pattern.
+All database content tables store bilingual fields (`*_hi`, `*_en`).
 
 ---
 
-## 7. Static Data Structure
+## 7. Content Sanitization
+
+**File**: `src/lib/sanitize.ts`
+
+Two sanitization functions using DOMPurify:
+- `sanitizeHtml(html)` — Allows safe HTML tags (p, h1-h6, ul, ol, li, a, strong, em, br, img, blockquote, pre, code). Used for article/description content rendering.
+- `sanitizeText(text)` — Strips ALL HTML tags. Used for titles, excerpts, plain text fields.
+
+Applied on all detail pages: `ArticleDetailPage`, `TempleDetailPage`, `FestivalDetailPage`.
+
+---
+
+## 8. Static Data (Retained)
 
 **File**: `src/data/astroData.ts`
 
-| Export | Type | Count | Usage |
-|--------|------|-------|-------|
-| `RASHIS` | Array of rashi objects | 12 | Horoscope grid, rashi selection |
-| `UPCOMING_FESTIVALS` | Array of festival objects | ~20 | Festival list/detail pages |
-| `BHAJANS` | Array of bhajan objects | 6 | Bhajan page |
-| `SUBSCRIPTION_PLANS` | Array of plan objects | 3 | Subscribe page |
-| `getTodayPanchang()` | Function → Panchang object | — | Panchang page, homepage card |
+Only timeless zodiac metadata remains static:
 
-Additional static data (temples, articles, vrat) is hardcoded directly within their respective page components rather than centralized in `astroData.ts`.
+| Export | Content |
+|--------|---------|
+| `RASHIS` | 12 rashis with id, nameHi, nameEn, symbol, element, lord, dateRange, color, luckyNum, description |
+| `PanchangData` | TypeScript interface for Panchang shape |
+
+All other data (festivals, bhajans, temples, articles, vrats, subscription plans) has been migrated to the database and removed from this file.
+
+---
+
+## 9. Theme Persistence
+
+User's theme preference (`light`, `dark`, `system`) is:
+1. Stored in `profiles.theme` column
+2. Applied on login via `AuthContext`
+3. Synced to `next-themes` provider
+4. Persisted across devices for logged-in users
+5. Falls back to `system` (OS preference) for anonymous users
