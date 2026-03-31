@@ -25,7 +25,7 @@ const VratPage = () => {
           {isLoading ? <div className="text-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" /></div> : (
             <div className="space-y-4">
               {(vrats || []).map(vrat => (
-                <div key={vrat.id} className="card-sacred rounded-2xl border border-border bg-card overflow-hidden">
+                <Link key={vrat.id} to={`/vrat/${vrat.slug}`} className="card-sacred rounded-2xl border border-border bg-card overflow-hidden hover:shadow-md transition-shadow block">
                   <div className="h-1.5 w-full" style={{ background: vrat.color || "hsl(24 95% 48%)" }} />
                   <div className="p-5">
                     <div className="flex items-start gap-4">
