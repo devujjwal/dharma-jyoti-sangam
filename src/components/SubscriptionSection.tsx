@@ -13,7 +13,7 @@ const SubscriptionSection = React.forwardRef<HTMLElement>((_, ref) => {
   if (isLoading || !plans?.length) return null;
 
   return (
-    <section className="py-16 relative overflow-hidden">
+    <section ref={ref} className="py-16 relative overflow-hidden">
       <div className="absolute inset-0"
         style={{ background: "linear-gradient(135deg, hsl(20 40% 10%), hsl(345 70% 22%), hsl(20 50% 15%))" }} />
       <div className="absolute inset-0 bg-pattern-sacred opacity-20" />
