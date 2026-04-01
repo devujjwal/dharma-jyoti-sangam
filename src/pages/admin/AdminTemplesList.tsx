@@ -2,6 +2,7 @@ import AdminDataTable, { Column } from "@/components/admin/AdminDataTable";
 import { useAdminList, useAdminDelete } from "@/hooks/use-admin-content";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import { TranslationBadge } from "@/components/admin/ContentQualityBadge";
 
 export default function AdminTemplesList() {
   const { data, isLoading } = useAdminList("temples");
@@ -14,6 +15,9 @@ export default function AdminTemplesList() {
     { key: "city", label: "City" },
     { key: "state", label: "State" },
     { key: "status", label: "Status", render: (r) => <Badge variant={r.status === "published" ? "default" : "secondary"}>{r.status}</Badge> },
+    { key: "_quality", label: "Quality", render: (r) => (
+      <TranslationBadge row={r} hiFields={["name_hi", "description_hi", "deity_hi"]} enFields={["name_en", "description_en", "deity_en"]} />
+    )},
   ];
 
   return (

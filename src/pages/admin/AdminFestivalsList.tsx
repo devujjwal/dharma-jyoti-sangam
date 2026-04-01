@@ -2,6 +2,7 @@ import AdminDataTable, { Column } from "@/components/admin/AdminDataTable";
 import { useAdminList, useAdminDelete } from "@/hooks/use-admin-content";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import { TranslationBadge } from "@/components/admin/ContentQualityBadge";
 
 export default function AdminFestivalsList() {
   const { data, isLoading } = useAdminList("festivals");
@@ -14,6 +15,9 @@ export default function AdminFestivalsList() {
     { key: "festival_date", label: "Date" },
     { key: "status", label: "Status", render: (r) => <Badge variant={r.status === "published" ? "default" : "secondary"}>{r.status}</Badge> },
     { key: "is_featured", label: "Featured", render: (r) => r.is_featured ? "⭐" : "" },
+    { key: "_quality", label: "Quality", render: (r) => (
+      <TranslationBadge row={r} hiFields={["name_hi", "description_hi", "excerpt_hi"]} enFields={["name_en", "description_en", "excerpt_en"]} />
+    )},
   ];
 
   return (
