@@ -3,11 +3,14 @@ import { useAdminList, useAdminDelete } from "@/hooks/use-admin-content";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { TranslationBadge } from "@/components/admin/ContentQualityBadge";
+import BulkTranslateButton from "@/components/admin/BulkTranslateButton";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function AdminFestivalsList() {
   const { data, isLoading } = useAdminList("festivals");
   const del = useAdminDelete("festivals");
   const nav = useNavigate();
+  const qc = useQueryClient();
 
   const columns: Column<any>[] = [
     { key: "emoji", label: "🎪", render: (r) => r.emoji || "🎉" },
@@ -31,6 +34,7 @@ export default function AdminFestivalsList() {
       getId={(r) => r.id}
       onEdit={(r) => nav(`/admin/festivals/${r.id}`)}
       onDelete={(r) => { if (confirm("Delete this festival?")) del.mutate(r.id); }}
+      extraActions={<BulkTranslateButton contentType="festivals" onComplete={() => qc.invalidateQueries({ queryKey: ["admin", "festivals"] })} />}
     />
   );
 }

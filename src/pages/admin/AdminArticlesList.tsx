@@ -3,11 +3,14 @@ import { useAdminList, useAdminDelete } from "@/hooks/use-admin-content";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { TranslationBadge } from "@/components/admin/ContentQualityBadge";
+import BulkTranslateButton from "@/components/admin/BulkTranslateButton";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function AdminArticlesList() {
   const { data, isLoading } = useAdminList("articles");
   const del = useAdminDelete("articles");
   const nav = useNavigate();
+  const qc = useQueryClient();
 
   const columns: Column<any>[] = [
     { key: "title_en", label: "Title" },
@@ -30,6 +33,7 @@ export default function AdminArticlesList() {
       getId={(r) => r.id}
       onEdit={(r) => nav(`/admin/articles/${r.id}`)}
       onDelete={(r) => { if (confirm("Delete this article?")) del.mutate(r.id); }}
+      extraActions={<BulkTranslateButton contentType="articles" onComplete={() => qc.invalidateQueries({ queryKey: ["admin", "articles"] })} />}
     />
   );
 }
