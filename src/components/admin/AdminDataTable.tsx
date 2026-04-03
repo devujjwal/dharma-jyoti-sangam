@@ -38,13 +38,16 @@ export default function AdminDataTable<T extends Record<string, any>>({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4 flex-wrap">
         <h1 className="text-2xl font-devanagari-serif font-bold text-foreground">{title}</h1>
-        {createUrl && (
-          <Button asChild>
-            <Link to={createUrl}><Plus className="h-4 w-4 mr-1" /> Add New</Link>
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          {extraActions}
+          {createUrl && (
+            <Button asChild>
+              <Link to={createUrl}><Plus className="h-4 w-4 mr-1" /> Add New</Link>
+            </Button>
+          )}
+        </div>
       </div>
 
       {searchField && (
