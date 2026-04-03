@@ -26,7 +26,7 @@ interface Props<T> {
 }
 
 export default function AdminDataTable<T extends Record<string, any>>({
-  title, columns, data, isLoading, createUrl, searchField, onEdit, onDelete, getId,
+  title, columns, data, isLoading, createUrl, searchField, onEdit, onDelete, getId, extraActions,
 }: Props<T>) {
   const [search, setSearch] = useState("");
 
