@@ -17,10 +17,10 @@ const ArticleDetailPage = () => {
   const isHi = language === "hi";
   const { data: article, isLoading } = useArticle(slug);
 
-  const articleTitle = article ? (isHi ? article.title_hi : article.title_en) : undefined;
+  const displayTitle = article ? (isHi ? article.title_hi : article.title_en) : undefined;
 
   useSeo({
-    title: articleTitle,
+    title: displayTitle,
     description: article?.seo_description || (article ? (isHi ? article.excerpt_hi : article.excerpt_en) || undefined : undefined),
     jsonLd: article ? articleJsonLd({
       title: article.title_en, slug: article.slug, excerpt: article.excerpt_en || undefined,
@@ -48,9 +48,9 @@ const ArticleDetailPage = () => {
             <Breadcrumbs crumbs={[
               { label: isHi ? "लेख" : "Articles", href: "/articles" },
               ...(article.category ? [{ label: article.category, href: "/articles" }] : []),
-              { label: articleTitle },
+              { label: displayTitle },
             ]} />
-            <h1 className="text-3xl font-devanagari-serif font-bold text-foreground mb-2">{articleTitle}</h1>
+            <h1 className="text-3xl font-devanagari-serif font-bold text-foreground mb-2">{displayTitle}</h1>
             <div className="flex items-center gap-3 text-sm text-muted-foreground font-devanagari flex-wrap">
               {article.author_name && <span>{article.author_name}</span>}
               {article.read_time && <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{article.read_time}</span>}
@@ -80,7 +80,7 @@ const ArticleDetailPage = () => {
 
           {/* Share */}
           <div className="flex gap-3 border-t border-border pt-6">
-            <ShareButton title={articleTitle} />
+            <ShareButton title={displayTitle} />
           </div>
 
           {/* Related */}
