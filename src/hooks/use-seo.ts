@@ -4,10 +4,11 @@ interface SeoOptions {
   title?: string;
   description?: string;
   ogImage?: string;
+  jsonLd?: Record<string, unknown>;
 }
 
-/** Sets document title and meta description. Restores defaults on unmount. */
-export function useSeo({ title, description, ogImage }: SeoOptions) {
+/** Sets document title, meta description, and optional JSON-LD. Restores defaults on unmount. */
+export function useSeo({ title, description, ogImage, jsonLd }: SeoOptions) {
   useEffect(() => {
     const prevTitle = document.title;
     const metaDesc = document.querySelector('meta[name="description"]');
@@ -32,9 +33,19 @@ export function useSeo({ title, description, ogImage }: SeoOptions) {
     if (title && ogTitle) ogTitle.setAttribute("content", title);
     if (ogImage && ogImg) ogImg.setAttribute("content", ogImage);
 
+    // JSON-LD structured data
+    let ldScript: HTMLScriptElement | null = null;
+    if (jsonLd) {
+      ldScript = document.createElement("script");
+      ldScript.type = "application/ld+json";
+      ldScript.textContent = JSON.stringify(jsonLd);
+      document.head.appendChild(ldScript);
+    }
+
     return () => {
       document.title = prevTitle;
       if (metaDesc) metaDesc.setAttribute("content", prevDesc);
+      if (ldScript) ldScript.remove();
     };
-  }, [title, description, ogImage]);
+  }, [title, description, ogImage, jsonLd]);
 }

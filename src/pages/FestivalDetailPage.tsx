@@ -4,6 +4,7 @@ import SiteFooter from "@/components/SiteFooter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useFestival } from "@/hooks/use-festivals";
 import { useSeo } from "@/hooks/use-seo";
+import { festivalJsonLd } from "@/lib/jsonLd";
 import { sanitizeText } from "@/lib/sanitize";
 import { Calendar, ArrowLeft, CalendarPlus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,10 @@ const FestivalDetailPage = () => {
   useSeo({
     title: festival ? (isHi ? festival.name_hi : festival.name_en) : undefined,
     description: festival?.seo_description || (festival ? sanitizeText(isHi ? festival.excerpt_hi : festival.excerpt_en) || undefined : undefined),
+    jsonLd: festival ? festivalJsonLd({
+      name: festival.name_en, slug: festival.slug, description: festival.description_en,
+      festival_date: festival.festival_date, image_url: festival.image_url,
+    }) : undefined,
   });
 
   if (isLoading) return (<div className="min-h-screen flex flex-col bg-background"><Navigation /><main className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></main><SiteFooter /></div>);
