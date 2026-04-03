@@ -7,6 +7,7 @@ import RelatedContent from "@/components/RelatedContent";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useArticle } from "@/hooks/use-articles";
 import { useSeo } from "@/hooks/use-seo";
+import { articleJsonLd } from "@/lib/jsonLd";
 import { sanitizeHtml } from "@/lib/sanitize";
 import { Clock, Loader2 } from "lucide-react";
 
