@@ -37,7 +37,7 @@ const ArticleDetailPage = () => {
 
   const content = isHi ? article.content_hi : article.content_en;
   const hasHtml = /<[a-z][\s\S]*>/i.test(content);
-  const articleTitle = isHi ? article.title_hi : article.title_en;
+  const displayTitle = isHi ? article.title_hi : article.title_en;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">

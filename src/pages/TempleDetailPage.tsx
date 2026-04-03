@@ -22,6 +22,12 @@ const TempleDetailPage = () => {
   useSeo({
     title: temple ? (isHi ? temple.name_hi : temple.name_en) : undefined,
     description: temple?.seo_description || (temple ? sanitizeText(isHi ? temple.short_description_hi : temple.short_description_en) || undefined : undefined),
+    jsonLd: temple ? templeJsonLd({
+      name: temple.name_en, slug: temple.slug, description: temple.description_en || undefined,
+      latitude: temple.latitude ? Number(temple.latitude) : null,
+      longitude: temple.longitude ? Number(temple.longitude) : null,
+      city: temple.city, state: temple.state, image_url: temple.image_url,
+    }) : undefined,
   });
 
   if (isLoading) return (<div className="min-h-screen flex flex-col bg-background"><Navigation /><main className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></main><SiteFooter /></div>);

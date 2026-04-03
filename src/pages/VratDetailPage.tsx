@@ -58,6 +58,10 @@ const VratDetailPage = () => {
   useSeo({
     title: vrat ? (isHi ? vrat.name_hi : vrat.name_en) : undefined,
     description: vrat?.seo_description || (vrat ? sanitizeText(isHi ? vrat.description_hi : vrat.description_en) || undefined : undefined),
+    jsonLd: vrat ? vratJsonLd({
+      name: vrat.name_en, slug: vrat.slug, description: vrat.description_en || undefined,
+      deity: vrat.deity_en,
+    }) : undefined,
   });
 
   if (isLoading) {
