@@ -4,6 +4,7 @@ import SiteFooter from "@/components/SiteFooter";
 import RelatedContent from "@/components/RelatedContent";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useSeo } from "@/hooks/use-seo";
+import { vratJsonLd } from "@/lib/jsonLd";
 import { sanitizeText } from "@/lib/sanitize";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
