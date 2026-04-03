@@ -4,6 +4,7 @@ import SiteFooter from "@/components/SiteFooter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useFestival } from "@/hooks/use-festivals";
 import { useSeo } from "@/hooks/use-seo";
+import { festivalJsonLd } from "@/lib/jsonLd";
 import { sanitizeText } from "@/lib/sanitize";
 import { Calendar, ArrowLeft, CalendarPlus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
