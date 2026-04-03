@@ -17,9 +17,16 @@ const ArticleDetailPage = () => {
   const isHi = language === "hi";
   const { data: article, isLoading } = useArticle(slug);
 
+  const articleTitle = article ? (isHi ? article.title_hi : article.title_en) : undefined;
+
   useSeo({
-    title: article ? (isHi ? article.title_hi : article.title_en) : undefined,
+    title: articleTitle,
     description: article?.seo_description || (article ? (isHi ? article.excerpt_hi : article.excerpt_en) || undefined : undefined),
+    jsonLd: article ? articleJsonLd({
+      title: article.title_en, slug: article.slug, excerpt: article.excerpt_en || undefined,
+      author_name: article.author_name, published_at: article.published_at,
+      updated_at: article.updated_at, featured_image_url: article.featured_image_url,
+    }) : undefined,
   });
 
   if (isLoading) return (<div className="min-h-screen flex flex-col bg-background"><Navigation /><main className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></main><SiteFooter /></div>);
