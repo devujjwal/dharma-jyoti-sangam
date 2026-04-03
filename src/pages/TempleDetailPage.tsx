@@ -8,6 +8,7 @@ import TempleMap from "@/components/TempleMap";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTemple } from "@/hooks/use-temples";
 import { useSeo } from "@/hooks/use-seo";
+import { templeJsonLd } from "@/lib/jsonLd";
 import { sanitizeText } from "@/lib/sanitize";
 import { MapPin, ExternalLink, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
