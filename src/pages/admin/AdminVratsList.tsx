@@ -3,11 +3,14 @@ import { useAdminList, useAdminDelete } from "@/hooks/use-admin-content";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { TranslationBadge } from "@/components/admin/ContentQualityBadge";
+import BulkTranslateButton from "@/components/admin/BulkTranslateButton";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function AdminVratsList() {
   const { data, isLoading } = useAdminList("vrats");
   const del = useAdminDelete("vrats");
   const nav = useNavigate();
+  const qc = useQueryClient();
 
   const columns: Column<any>[] = [
     { key: "emoji", label: "🙏", render: (r) => r.emoji || "🙏" },
@@ -30,6 +33,7 @@ export default function AdminVratsList() {
       getId={(r) => r.id}
       onEdit={(r) => nav(`/admin/vrats/${r.id}`)}
       onDelete={(r) => { if (confirm("Delete this vrat?")) del.mutate(r.id); }}
+      extraActions={<BulkTranslateButton contentType="vrats" onComplete={() => qc.invalidateQueries({ queryKey: ["admin", "vrats"] })} />}
     />
   );
 }
