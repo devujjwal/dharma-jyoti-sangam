@@ -22,6 +22,7 @@ interface Props<T> {
   onEdit?: (row: T) => void;
   onDelete?: (row: T) => void;
   getId: (row: T) => string;
+  extraActions?: React.ReactNode;
 }
 
 export default function AdminDataTable<T extends Record<string, any>>({
