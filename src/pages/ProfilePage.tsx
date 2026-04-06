@@ -10,7 +10,8 @@ import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
 import { RASHIS } from "@/data/astroData";
 import { useBhajans } from "@/hooks/use-bhajans";
-import { LogOut, Bookmark, BookOpen, Star, Zap, User, Save, ExternalLink, PlusCircle, Loader2, CheckCircle } from "lucide-react";
+import { LogOut, Bookmark, BookOpen, Star, Zap, User, Save, ExternalLink, PlusCircle, Loader2, CheckCircle, Bell, BellOff, CalendarDays } from "lucide-react";
+import { useReminders, useCancelReminder } from "@/hooks/use-reminders";
 
 interface SavedKundali {
   id: string;
