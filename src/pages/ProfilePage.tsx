@@ -45,7 +45,9 @@ const ProfilePage = () => {
   const isHi = language === "hi";
   const { data: allBhajans } = useBhajans();
 
-  const [activeTab, setActiveTab] = useState<"overview" | "kundalis" | "bhajans" | "credits">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "kundalis" | "bhajans" | "credits" | "reminders">("overview");
+  const { data: reminders } = useReminders();
+  const cancelReminder = useCancelReminder();
   const [savedKundalis, setSavedKundalis] = useState<SavedKundali[]>([]);
   const [bookmarkedBhajans, setBookmarkedBhajans] = useState<BookmarkedBhajan[]>([]);
   const [editMode, setEditMode] = useState(false);
