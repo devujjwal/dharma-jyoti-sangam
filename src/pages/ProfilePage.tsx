@@ -179,6 +179,7 @@ const ProfilePage = () => {
     { key: "kundalis", icon: <BookOpen className="w-4 h-4" />, hiLabel: "कुंडली", enLabel: "Kundalis" },
     { key: "bhajans", icon: <Bookmark className="w-4 h-4" />, hiLabel: "भजन", enLabel: "Bhajans" },
     { key: "credits", icon: <Zap className="w-4 h-4" />, hiLabel: "क्रेडिट", enLabel: "Credits" },
+    { key: "reminders", icon: <Bell className="w-4 h-4" />, hiLabel: "रिमाइंडर", enLabel: "Reminders" },
   ] as const;
 
   if (!user) return null;
