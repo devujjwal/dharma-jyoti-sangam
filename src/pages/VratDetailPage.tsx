@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
 import RelatedContent from "@/components/RelatedContent";
+import ReminderButton from "@/components/ReminderButton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useSeo } from "@/hooks/use-seo";
 import { vratJsonLd } from "@/lib/jsonLd";
@@ -152,10 +153,11 @@ const VratDetailPage = () => {
                 {occurrences.map((occ) => (
                   <div key={occ.id} className="flex items-center gap-3 rounded-xl bg-muted/40 px-4 py-3">
                     <Calendar className="w-4 h-4 text-primary shrink-0" />
-                    <div>
+                    <div className="flex-1">
                       <p className="text-sm font-semibold text-foreground font-devanagari">{occ.occurrence_date}</p>
                       {occ.notes && <p className="text-xs text-muted-foreground font-devanagari">{occ.notes}</p>}
                     </div>
+                    <ReminderButton contentType="vrat" contentId={vrat.id} remindDate={occ.occurrence_date} />
                   </div>
                 ))}
               </div>

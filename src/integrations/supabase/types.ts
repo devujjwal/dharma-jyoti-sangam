@@ -652,6 +652,42 @@ export type Database = {
         }
         Relationships: []
       }
+      reminders: {
+        Row: {
+          content_id: string
+          content_type: string
+          created_at: string
+          id: string
+          remind_date: string
+          remind_time: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content_id: string
+          content_type: string
+          created_at?: string
+          id?: string
+          remind_date: string
+          remind_time?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content_id?: string
+          content_type?: string
+          created_at?: string
+          id?: string
+          remind_date?: string
+          remind_time?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       saved_kundalis: {
         Row: {
           created_at: string
