@@ -10,7 +10,8 @@ import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
 import { RASHIS } from "@/data/astroData";
 import { useBhajans } from "@/hooks/use-bhajans";
-import { LogOut, Bookmark, BookOpen, Star, Zap, User, Save, ExternalLink, PlusCircle, Loader2, CheckCircle } from "lucide-react";
+import { LogOut, Bookmark, BookOpen, Star, Zap, User, Save, ExternalLink, PlusCircle, Loader2, CheckCircle, Bell, BellOff, CalendarDays } from "lucide-react";
+import { useReminders, useCancelReminder } from "@/hooks/use-reminders";
 
 interface SavedKundali {
   id: string;
@@ -44,7 +45,9 @@ const ProfilePage = () => {
   const isHi = language === "hi";
   const { data: allBhajans } = useBhajans();
 
-  const [activeTab, setActiveTab] = useState<"overview" | "kundalis" | "bhajans" | "credits">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "kundalis" | "bhajans" | "credits" | "reminders">("overview");
+  const { data: reminders } = useReminders();
+  const cancelReminder = useCancelReminder();
   const [savedKundalis, setSavedKundalis] = useState<SavedKundali[]>([]);
   const [bookmarkedBhajans, setBookmarkedBhajans] = useState<BookmarkedBhajan[]>([]);
   const [editMode, setEditMode] = useState(false);
@@ -176,6 +179,7 @@ const ProfilePage = () => {
     { key: "kundalis", icon: <BookOpen className="w-4 h-4" />, hiLabel: "कुंडली", enLabel: "Kundalis" },
     { key: "bhajans", icon: <Bookmark className="w-4 h-4" />, hiLabel: "भजन", enLabel: "Bhajans" },
     { key: "credits", icon: <Zap className="w-4 h-4" />, hiLabel: "क्रेडिट", enLabel: "Credits" },
+    { key: "reminders", icon: <Bell className="w-4 h-4" />, hiLabel: "रिमाइंडर", enLabel: "Reminders" },
   ] as const;
 
   if (!user) return null;
@@ -564,6 +568,62 @@ const ProfilePage = () => {
                   ))}
                 </div>
               )}
+            </div>
+          )}
+          {/* Reminders Tab */}
+          {activeTab === "reminders" && (
+            <div className="space-y-6">
+              <div className="rounded-2xl border border-border bg-card p-6 shadow-card">
+                <div className="flex items-center justify-between mb-5">
+                  <h2 className="font-devanagari-serif font-bold text-foreground text-lg">
+                    🔔 {isHi ? "आगामी रिमाइंडर" : "Upcoming Reminders"}
+                  </h2>
+                  <span className="text-xs text-muted-foreground font-devanagari bg-muted rounded-full px-2 py-0.5">
+                    {reminders?.length ?? 0} {isHi ? "सक्रिय" : "active"}
+                  </span>
+                </div>
+
+                {!reminders || reminders.length === 0 ? (
+                  <div className="text-center py-10 text-muted-foreground">
+                    <Bell className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                    <p className="font-devanagari text-sm">
+                      {isHi ? "कोई रिमाइंडर नहीं। त्योहार या व्रत पेज से रिमाइंडर सेट करें।" : "No reminders yet. Set reminders from festival or vrat pages."}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {reminders.map((r) => (
+                      <div key={r.id} className="flex items-center gap-3 p-3 rounded-xl bg-muted/50 hover:bg-muted transition-colors">
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-lg shrink-0 bg-primary/10">
+                          {r.content_type === "festival" ? "🎉" : "🙏"}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-devanagari font-medium text-foreground capitalize">
+                            {r.content_type === "festival" ? (isHi ? "त्योहार" : "Festival") : (isHi ? "व्रत" : "Vrat")}
+                          </p>
+                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-devanagari">
+                            <CalendarDays className="w-3 h-3" />
+                            {new Date(r.remind_date).toLocaleDateString(isHi ? "hi-IN" : "en-IN", {
+                              day: "numeric", month: "long", year: "numeric"
+                            })}
+                            {r.remind_time && ` · ${r.remind_time}`}
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          disabled={cancelReminder.isPending}
+                          onClick={() => cancelReminder.mutate(r.id)}
+                          className="shrink-0 text-destructive hover:text-destructive hover:bg-destructive/10 gap-1 font-devanagari"
+                        >
+                          <BellOff className="w-4 h-4" />
+                          <span className="hidden sm:inline">{isHi ? "हटाएँ" : "Cancel"}</span>
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
