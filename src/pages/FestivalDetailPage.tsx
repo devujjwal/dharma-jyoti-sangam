@@ -77,6 +77,7 @@ const FestivalDetailPage = () => {
           )}
           <RelatedContent sourceType="festival" sourceId={festival.id} />
           <div className="flex flex-wrap gap-3">
+            <ReminderButton contentType="festival" contentId={festival.id} remindDate={festival.festival_date} />
             <Button onClick={() => downloadICS(festival)} variant="outline" className="font-devanagari gap-2"><CalendarPlus className="w-4 h-4" />{isHi ? "कैलेंडर में जोड़ें" : "Add to Calendar"}</Button>
             <Button asChild variant="outline" className="font-devanagari"><Link to="/festivals">{isHi ? "सभी त्यौहार देखें" : "View All Festivals"}</Link></Button>
           </div>

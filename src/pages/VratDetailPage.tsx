@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
 import RelatedContent from "@/components/RelatedContent";
+import ReminderButton from "@/components/ReminderButton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useSeo } from "@/hooks/use-seo";
 import { vratJsonLd } from "@/lib/jsonLd";
