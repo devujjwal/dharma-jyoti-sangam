@@ -632,9 +632,16 @@ const ProfilePage = () => {
                           {r.content_type === "festival" ? "🎉" : "🙏"}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-devanagari font-medium text-foreground">
-                            {getContentName(r)}
-                          </p>
+                          {(() => {
+                            const info = getContentInfo(r);
+                            return info.link ? (
+                              <Link to={info.link} className="text-sm font-devanagari font-medium text-primary hover:underline">
+                                {info.name}
+                              </Link>
+                            ) : (
+                              <p className="text-sm font-devanagari font-medium text-foreground">{info.name}</p>
+                            );
+                          })()}
                           <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-devanagari">
                             <CalendarDays className="w-3 h-3" />
                             {new Date(r.remind_date).toLocaleDateString(isHi ? "hi-IN" : "en-IN", {
