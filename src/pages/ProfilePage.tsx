@@ -59,8 +59,8 @@ const ProfilePage = () => {
     queryKey: ["reminder-festival-names", festivalIds],
     enabled: festivalIds.length > 0,
     queryFn: async () => {
-      const { data } = await supabase.from("festivals").select("id, name_en, name_hi").in("id", festivalIds);
-      return Object.fromEntries((data ?? []).map(f => [f.id, { en: f.name_en, hi: f.name_hi }]));
+      const { data } = await supabase.from("festivals").select("id, name_en, name_hi, slug").in("id", festivalIds);
+      return Object.fromEntries((data ?? []).map(f => [f.id, { en: f.name_en, hi: f.name_hi, slug: f.slug }]));
     },
     staleTime: 1000 * 60 * 10,
   });
@@ -69,17 +69,18 @@ const ProfilePage = () => {
     queryKey: ["reminder-vrat-names", vratIds],
     enabled: vratIds.length > 0,
     queryFn: async () => {
-      const { data } = await supabase.from("vrats").select("id, name_en, name_hi").in("id", vratIds);
-      return Object.fromEntries((data ?? []).map(v => [v.id, { en: v.name_en, hi: v.name_hi }]));
+      const { data } = await supabase.from("vrats").select("id, name_en, name_hi, slug").in("id", vratIds);
+      return Object.fromEntries((data ?? []).map(v => [v.id, { en: v.name_en, hi: v.name_hi, slug: v.slug }]));
     },
     staleTime: 1000 * 60 * 10,
   });
 
-  const getContentName = (r: { content_type: string; content_id: string }) => {
+  const getContentInfo = (r: { content_type: string; content_id: string }) => {
     const names = r.content_type === "festival" ? festivalNames : vratNames;
     const entry = names?.[r.content_id];
-    if (entry) return isHi ? entry.hi : entry.en;
-    return r.content_type === "festival" ? (isHi ? "त्योहार" : "Festival") : (isHi ? "व्रत" : "Vrat");
+    const name = entry ? (isHi ? entry.hi : entry.en) : (r.content_type === "festival" ? (isHi ? "त्योहार" : "Festival") : (isHi ? "व्रत" : "Vrat"));
+    const link = entry?.slug ? (r.content_type === "festival" ? `/festivals/${entry.slug}` : `/vrat/${entry.slug}`) : null;
+    return { name, link };
   };
   const [savedKundalis, setSavedKundalis] = useState<SavedKundali[]>([]);
   const [bookmarkedBhajans, setBookmarkedBhajans] = useState<BookmarkedBhajan[]>([]);
