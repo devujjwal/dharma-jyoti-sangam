@@ -49,6 +49,38 @@ const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState<"overview" | "kundalis" | "bhajans" | "credits" | "reminders">("overview");
   const { data: reminders } = useReminders();
   const cancelReminder = useCancelReminder();
+
+  // Resolve festival/vrat names for reminders
+  const contentIds = reminders?.map(r => r.content_id) ?? [];
+  const festivalIds = reminders?.filter(r => r.content_type === "festival").map(r => r.content_id) ?? [];
+  const vratIds = reminders?.filter(r => r.content_type === "vrat").map(r => r.content_id) ?? [];
+
+  const { data: festivalNames } = useQuery({
+    queryKey: ["reminder-festival-names", festivalIds],
+    enabled: festivalIds.length > 0,
+    queryFn: async () => {
+      const { data } = await supabase.from("festivals").select("id, name_en, name_hi").in("id", festivalIds);
+      return Object.fromEntries((data ?? []).map(f => [f.id, { en: f.name_en, hi: f.name_hi }]));
+    },
+    staleTime: 1000 * 60 * 10,
+  });
+
+  const { data: vratNames } = useQuery({
+    queryKey: ["reminder-vrat-names", vratIds],
+    enabled: vratIds.length > 0,
+    queryFn: async () => {
+      const { data } = await supabase.from("vrats").select("id, name_en, name_hi").in("id", vratIds);
+      return Object.fromEntries((data ?? []).map(v => [v.id, { en: v.name_en, hi: v.name_hi }]));
+    },
+    staleTime: 1000 * 60 * 10,
+  });
+
+  const getContentName = (r: { content_type: string; content_id: string }) => {
+    const names = r.content_type === "festival" ? festivalNames : vratNames;
+    const entry = names?.[r.content_id];
+    if (entry) return isHi ? entry.hi : entry.en;
+    return r.content_type === "festival" ? (isHi ? "त्योहार" : "Festival") : (isHi ? "व्रत" : "Vrat");
+  };
   const [savedKundalis, setSavedKundalis] = useState<SavedKundali[]>([]);
   const [bookmarkedBhajans, setBookmarkedBhajans] = useState<BookmarkedBhajan[]>([]);
   const [editMode, setEditMode] = useState(false);
