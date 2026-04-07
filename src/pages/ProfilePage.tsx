@@ -631,8 +631,8 @@ const ProfilePage = () => {
                           {r.content_type === "festival" ? "🎉" : "🙏"}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-devanagari font-medium text-foreground capitalize">
-                            {r.content_type === "festival" ? (isHi ? "त्योहार" : "Festival") : (isHi ? "व्रत" : "Vrat")}
+                          <p className="text-sm font-devanagari font-medium text-foreground">
+                            {getContentName(r)}
                           </p>
                           <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-devanagari">
                             <CalendarDays className="w-3 h-3" />
