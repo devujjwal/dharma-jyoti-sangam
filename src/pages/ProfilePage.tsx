@@ -208,12 +208,14 @@ const ProfilePage = () => {
 
   const myRashi = RASHIS.find(r => r.id === (profile?.rashi_id ?? rashiId));
 
+  const reminderCount = reminders?.length ?? 0;
+
   const tabs = [
-    { key: "overview", icon: <User className="w-4 h-4" />, hiLabel: "प्रोफ़ाइल", enLabel: "Profile" },
-    { key: "kundalis", icon: <BookOpen className="w-4 h-4" />, hiLabel: "कुंडली", enLabel: "Kundalis" },
-    { key: "bhajans", icon: <Bookmark className="w-4 h-4" />, hiLabel: "भजन", enLabel: "Bhajans" },
-    { key: "credits", icon: <Zap className="w-4 h-4" />, hiLabel: "क्रेडिट", enLabel: "Credits" },
-    { key: "reminders", icon: <Bell className="w-4 h-4" />, hiLabel: "रिमाइंडर", enLabel: "Reminders" },
+    { key: "overview", icon: <User className="w-4 h-4" />, hiLabel: "प्रोफ़ाइल", enLabel: "Profile", badge: 0 },
+    { key: "kundalis", icon: <BookOpen className="w-4 h-4" />, hiLabel: "कुंडली", enLabel: "Kundalis", badge: 0 },
+    { key: "bhajans", icon: <Bookmark className="w-4 h-4" />, hiLabel: "भजन", enLabel: "Bhajans", badge: 0 },
+    { key: "credits", icon: <Zap className="w-4 h-4" />, hiLabel: "क्रेडिट", enLabel: "Credits", badge: 0 },
+    { key: "reminders", icon: <Bell className="w-4 h-4" />, hiLabel: "रिमाइंडर", enLabel: "Reminders", badge: reminderCount },
   ] as const;
 
   if (!user) return null;
@@ -264,7 +266,7 @@ const ProfilePage = () => {
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm font-devanagari font-medium transition-colors ${
+                className={`flex-1 relative flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm font-devanagari font-medium transition-colors ${
                   activeTab === tab.key
                     ? "bg-background text-primary shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
@@ -272,6 +274,11 @@ const ProfilePage = () => {
               >
                 {tab.icon}
                 <span className="hidden sm:inline">{isHi ? tab.hiLabel : tab.enLabel}</span>
+                {tab.badge > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold leading-none px-1">
+                    {tab.badge > 99 ? "99+" : tab.badge}
+                  </span>
+                )}
               </button>
             ))}
           </div>
