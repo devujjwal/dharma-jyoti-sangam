@@ -12,6 +12,7 @@ import { RASHIS } from "@/data/astroData";
 import { useBhajans } from "@/hooks/use-bhajans";
 import { LogOut, Bookmark, BookOpen, Star, Zap, User, Save, ExternalLink, PlusCircle, Loader2, CheckCircle, Bell, BellOff, CalendarDays } from "lucide-react";
 import { useReminders, useCancelReminder } from "@/hooks/use-reminders";
+import { useQuery } from "@tanstack/react-query";
 
 interface SavedKundali {
   id: string;
