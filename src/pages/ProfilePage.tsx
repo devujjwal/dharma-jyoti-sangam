@@ -208,12 +208,14 @@ const ProfilePage = () => {
 
   const myRashi = RASHIS.find(r => r.id === (profile?.rashi_id ?? rashiId));
 
+  const reminderCount = reminders?.length ?? 0;
+
   const tabs = [
-    { key: "overview", icon: <User className="w-4 h-4" />, hiLabel: "प्रोफ़ाइल", enLabel: "Profile" },
-    { key: "kundalis", icon: <BookOpen className="w-4 h-4" />, hiLabel: "कुंडली", enLabel: "Kundalis" },
-    { key: "bhajans", icon: <Bookmark className="w-4 h-4" />, hiLabel: "भजन", enLabel: "Bhajans" },
-    { key: "credits", icon: <Zap className="w-4 h-4" />, hiLabel: "क्रेडिट", enLabel: "Credits" },
-    { key: "reminders", icon: <Bell className="w-4 h-4" />, hiLabel: "रिमाइंडर", enLabel: "Reminders" },
+    { key: "overview", icon: <User className="w-4 h-4" />, hiLabel: "प्रोफ़ाइल", enLabel: "Profile", badge: 0 },
+    { key: "kundalis", icon: <BookOpen className="w-4 h-4" />, hiLabel: "कुंडली", enLabel: "Kundalis", badge: 0 },
+    { key: "bhajans", icon: <Bookmark className="w-4 h-4" />, hiLabel: "भजन", enLabel: "Bhajans", badge: 0 },
+    { key: "credits", icon: <Zap className="w-4 h-4" />, hiLabel: "क्रेडिट", enLabel: "Credits", badge: 0 },
+    { key: "reminders", icon: <Bell className="w-4 h-4" />, hiLabel: "रिमाइंडर", enLabel: "Reminders", badge: reminderCount },
   ] as const;
 
   if (!user) return null;
