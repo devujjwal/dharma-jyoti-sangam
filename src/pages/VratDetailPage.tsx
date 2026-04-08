@@ -169,6 +169,7 @@ const VratDetailPage = () => {
           <RelatedContent sourceType="vrat" sourceId={vrat.id} />
 
           <div className="flex flex-wrap gap-3">
+            <ShareButton title={isHi ? vrat.name_hi : vrat.name_en} />
             <Link to="/vrat" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card font-devanagari text-sm hover:bg-muted transition-colors">
               {isHi ? "सभी व्रत देखें" : "View All Vrats"}
             </Link>
