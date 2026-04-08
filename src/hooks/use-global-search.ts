@@ -11,7 +11,7 @@ export interface SearchResult {
   emoji: string | null;
   color: string | null;
   image_url: string | null;
-  rank: number;
+  sort_rank: number;
 }
 
 export function useGlobalSearch(query: string) {
