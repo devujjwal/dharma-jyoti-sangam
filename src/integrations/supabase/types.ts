@@ -1123,8 +1123,8 @@ export type Database = {
           excerpt: string
           id: string
           image_url: string
-          rank: number
           slug: string
+          sort_rank: number
           title_en: string
           title_hi: string
         }[]
