@@ -10,6 +10,7 @@ import { Calendar, ArrowLeft, CalendarPlus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import RelatedContent from "@/components/RelatedContent";
 import ReminderButton from "@/components/ReminderButton";
+import ShareButton from "@/components/ShareButton";
 
 function downloadICS(festival: any) {
   const [y, m, d] = festival.festival_date.split("-").map(Number);
