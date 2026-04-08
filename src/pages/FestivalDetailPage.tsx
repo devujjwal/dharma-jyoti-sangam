@@ -10,6 +10,7 @@ import { Calendar, ArrowLeft, CalendarPlus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import RelatedContent from "@/components/RelatedContent";
 import ReminderButton from "@/components/ReminderButton";
+import ShareButton from "@/components/ShareButton";
 
 function downloadICS(festival: any) {
   const [y, m, d] = festival.festival_date.split("-").map(Number);
@@ -79,6 +80,7 @@ const FestivalDetailPage = () => {
           <div className="flex flex-wrap gap-3">
             <ReminderButton contentType="festival" contentId={festival.id} remindDate={festival.festival_date} />
             <Button onClick={() => downloadICS(festival)} variant="outline" className="font-devanagari gap-2"><CalendarPlus className="w-4 h-4" />{isHi ? "कैलेंडर में जोड़ें" : "Add to Calendar"}</Button>
+            <ShareButton title={isHi ? festival.name_hi : festival.name_en} />
             <Button asChild variant="outline" className="font-devanagari"><Link to="/festivals">{isHi ? "सभी त्यौहार देखें" : "View All Festivals"}</Link></Button>
           </div>
         </div>
