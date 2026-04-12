@@ -1,0 +1,19 @@
+{
+  "name": "दिव्य ज्योति — Divya Jyoti",
+  "short_name": "Divya Jyoti",
+  "description": "Hindu spiritual platform — Panchang, Horoscope, Kundali, Festivals, Temples, Bhajans & more",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF8F0",
+  "theme_color": "#E56B1F",
+  "orientation": "portrait-primary",
+  "lang": "hi",
+  "categories": ["lifestyle", "education"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}

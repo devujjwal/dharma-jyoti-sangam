@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, forwardRef } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, X, Music } from "lucide-react";
 import type { Bhajan } from "@/hooks/use-bhajans";
@@ -48,7 +48,7 @@ function useBhajanPlayer() {
   return globalState;
 }
 
-const BhajanPlayer = () => {
+const BhajanPlayer = forwardRef<HTMLDivElement>((_, ref) => {
   const { language } = useLanguage();
   const isHi = language === "hi";
   const state = useBhajanPlayer();
@@ -237,6 +237,8 @@ const BhajanPlayer = () => {
       </div>
     </>
   );
-};
+});
+
+BhajanPlayer.displayName = "BhajanPlayer";
 
 export default BhajanPlayer;
